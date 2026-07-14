@@ -1,3 +1,5 @@
+
+import { userRegister } from "@/service/register";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -14,25 +16,25 @@ export default function Register() {
     e.preventDefault();
 
     if (!name || !email || !password) {
+      toast.error("All fileds are required to register")
       return;
+    }
+
+    if(password.length < 6){
+      toast.error("Password must be at least of 6 characters")
+      return
     }
 
     try {
       setLoading(true);
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
+      const{ok,status,data} = await userRegister(name,email,password)
 
-      const data = await res.json();
-      if (res.ok) {
+      
+      if (ok) {
         toast.success("You are ready to login")
         router.push("/login");
       } else {
-        console.log(res.status);
+        toast.error(data.message);
       }
     } catch (error) {
       console.log(error);

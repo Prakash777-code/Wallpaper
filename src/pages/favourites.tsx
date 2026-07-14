@@ -9,6 +9,7 @@ export default function Favourites() {
   const [favourites, setFavourites] = useState<favourites[]>([]);
   const [loading, setLoading] = useState(false);
   const [deleteLoader, setDeleteLoader] = useState(false);
+  const [showAuthPopup, setShowAuthPopup] = useState(false);
 
   const router = useRouter();
 
@@ -23,7 +24,7 @@ export default function Favourites() {
       const { ok, status, data } = await fetchFavouriteWallpaper();
 
       if (status === 401) {
-        router.push("/login");
+        setShowAuthPopup(true);
         return;
       }
       if (ok) {
@@ -31,7 +32,6 @@ export default function Favourites() {
       } else {
         toast.error(data.message);
       }
-      //setFourites(data);
     } catch (error) {
       toast.error("Something went wrong");
       console.log(error);
@@ -46,7 +46,7 @@ export default function Favourites() {
       const { ok, status, data } = await unfavouriteWallpaper(wallpaperId);
 
       if (status === 401) {
-        router.push("/login");
+        setShowAuthPopup(true);
         return;
       }
       if (ok) {
@@ -61,6 +61,10 @@ export default function Favourites() {
     } finally {
       setDeleteLoader(false);
     }
+  };
+
+  const handleAAuthPopup = async () => {
+    setShowAuthPopup(true);
   };
 
   return (
@@ -80,6 +84,41 @@ export default function Favourites() {
             </p>
           </div>
         </div>
+
+        {showAuthPopup && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+            <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-900/90 p-8 text-center shadow-2xl">
+              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-cyan-500/20 text-3xl">
+                🚀
+              </div>
+
+              <h2 className="text-3xl font-bold text-white">
+                Explore Unlimited
+              </h2>
+
+              <p className="mt-3 text-slate-300">
+                Register for free to unlock unlimited wallpapers, save your
+                favourites, and enjoy the full experience.
+              </p>
+
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <button
+                  onClick={() => router.push("/register")}
+                  className="flex-1 rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-white transition hover:bg-cyan-400"
+                >
+                  Register Free
+                </button>
+
+                <button
+                  onClick={() => setShowAuthPopup(false)}
+                  className="flex-1 rounded-xl border border-white/20 px-5 py-3 font-semibold text-slate-300 transition hover:bg-white/10"
+                >
+                  Maybe Later
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {loading ? (
           <div className="flex h-[60vh] items-center justify-center">
@@ -111,7 +150,10 @@ export default function Favourites() {
                 key={wallpaper.id}
                 className="group overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl transition duration-300 hover:-translate-y-2 hover:border-blue-500/50"
               >
-                <div className="relative h-[420px] overflow-hidden">
+                <div
+                  onClick={() => window.open(wallpaper.image_url, "_blank")}
+                  className=" cursor-pointer relative h-[420px] overflow-hidden"
+                >
                   <img
                     src={wallpaper.image_url}
                     alt={wallpaper.photographer ?? "Wallpaper"}

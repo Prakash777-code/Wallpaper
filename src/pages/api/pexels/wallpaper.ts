@@ -6,12 +6,13 @@ export default async function handler(
   res: NextApiResponse,
 ) {
  
-  const user=verifyToken(req)
+  /*const user=verifyToken(req)
   if(!user){
     return res.status(401).json({
       message:"Unauthorized"
     })
   }
+    **/
 
   if (req.method !== "GET") {
     return res.status(405).json({
@@ -20,6 +21,7 @@ export default async function handler(
   }
 
   const query = req.query.query as string;
+  const page = Number(req.query.page || 1)
 
   if (!query) {
     return res.status(400).json({
@@ -29,7 +31,7 @@ export default async function handler(
 
   try {
     const response = await fetch(
-      `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=32`,
+      `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&page=${page}&per_page=20`,
       {
         headers: {
           Authorization: process.env.PEXELS_API_KEY!,

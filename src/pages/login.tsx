@@ -1,3 +1,4 @@
+import { handleUserLogin } from "@/service/login";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -18,20 +19,15 @@ export default function Login() {
 
     try {
       setLoading(true);
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
+      const{ok,status,data} = await handleUserLogin(email,password)
+      if(status === 401){
+        toast.error(data.message)
+        return
+      }
+      if (ok) {
         router.push("/");
       } else {
-        console.log(res.status);
+        console.log(status);
       }
     } catch (error) {
       console.log(error);
