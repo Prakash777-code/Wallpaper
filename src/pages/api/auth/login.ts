@@ -48,15 +48,35 @@ export default async function handler(
       { expiresIn: "7d" },
     );
 
-    const cookie = serialize("token",token,{
+    const accessToken = jwt.sign(
+      {userId:user.id},
+      process.env.JWT_SECRET as string,
+      {expiresIn:"5m"}
+    )
+
+    const refreshToken = jwt.sign(
+      {userId:user.id},
+      process.env.REFRESH_SECRET as string,
+      {expiresIn:"7d"}
+    )
+
+    const accessCookie = serialize("accessToken",accessToken,{
       httpOnly:true,
       secure:process.env.NODE_ENV === "production",
       sameSite:"lax",
-      maxAge:60*60*24*2,
+      maxAge:60*5,
       path:"/",
     });
 
-    res.setHeader("Set-Cookie", cookie)
+    const refreshCookie = serialize("refreshToken",refreshToken,{
+      httpOnly:true,
+      secure:process.env.NODE_ENV === "production",
+      sameSite:"lax",
+      maxAge:60*60*24*7,
+      path:"/"
+    })
+
+    res.setHeader("Set-Cookie", [accessCookie,refreshCookie])
 
     return res.status(200).json({
       message: "Logged in successfully",

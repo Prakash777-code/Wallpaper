@@ -6,6 +6,9 @@ import toast from "react-hot-toast";
 import { logout } from "@/service/auth";
 import { editUserName } from "@/service/editName";
 import { updatePassword } from "@/service/updatePassword";
+import AuthPopup from "@/components/AuthPopup";
+import EditNameCard from "@/components/EditNameCard";
+import UpdatePasswordCard from "@/components/UpdatePasswordCard";
 
 export default function Profile() {
   const [profile, setProfile] = useState<UserProfile>();
@@ -28,7 +31,7 @@ export default function Profile() {
 
   const handleLogout = async () => {
     try {
-      localStorage.clear()
+      localStorage.clear();
       const { ok, data } = await logout();
       if (ok) {
         toast.success(data.message);
@@ -134,12 +137,18 @@ export default function Profile() {
     }
   };
 
+  const resetUpdatePasswordInputs = () =>{
+    setCurrentPassword("")
+    setNewPassword("")
+    setConfirmPassword("")
+  }
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black px-6 py-10 text-white">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8 flex items-center gap-5 rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-indigo-600 text-2xl font-bold">
-            {profile?.name.charAt(0).toUpperCase()}
+            {profile?.name?.charAt(0)?.toUpperCase()}
           </div>
 
           <div>
@@ -196,93 +205,22 @@ export default function Profile() {
             </div>
           </div>
 
-          {showAuthPopup && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-              <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-900/90 p-8 text-center shadow-2xl">
-                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-cyan-500/20 text-3xl">
-                  🚀
-                </div>
-
-                <h2 className="text-3xl font-bold text-white">
-                  Explore Unlimited
-                </h2>
-
-                <p className="mt-3 text-slate-300">
-                  Register for free to unlock unlimited wallpapers, save your
-                  favourites, and enjoy the full experience.
-                </p>
-
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                  <button
-                    onClick={() => router.push("/register")}
-                    className="flex-1 rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-white transition hover:bg-cyan-400"
-                  >
-                    Register Free
-                  </button>
-
-                  <button
-                    onClick={() =>{
-                       setShowAuthPopup(false)
-                       router.push("/")
-                    }}
-                    className="flex-1 rounded-xl border border-white/20 px-5 py-3 font-semibold text-slate-300 transition hover:bg-white/10"
-                  >
-                    Maybe Later
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+          <AuthPopup
+            open={showAuthPopup}
+            close={() => setShowAuthPopup(false)}
+          />
 
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
             <h2 className="mb-6 text-xl font-semibold">Account</h2>
 
             <div className="space-y-4">
-              {isEditingName && (
-                <div
-                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4"
-                  onClick={() => setIsEditingName(false)}
-                >
-                  <div
-                    className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-900/90 p-8 shadow-2xl"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <h2 className="mb-2 text-2xl font-bold text-white">
-                      Edit Name
-                    </h2>
-
-                    <p className="mb-6 text-slate-400">
-                      Enter your new user name.
-                    </p>
-
-                    <input
-                      type="text"
-                      value={newName}
-                      onChange={(e) => {
-                        setNewName(e.target.value);
-                      }}
-                      placeholder="Enter your new name"
-                      className="w-full rounded-xl border border-white/10 bg-slate-800 px-4 py-3 text-white outline-none transition focus:border-cyan-500"
-                    />
-
-                    <div className="mt-6 flex gap-3">
-                      <button
-                        onClick={() => handleEditName(newName)}
-                        className="cursor-pointer flex-1 rounded-xl bg-cyan-500 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-cyan-400 hover:shadow-lg hover:shadow-cyan-500/30 active:scale-95"
-                      >
-                        Save
-                      </button>
-
-                      <button
-                        onClick={() => setIsEditingName(false)}
-                        className="cursor-pointer flex-1 rounded-xl border border-white/20 py-3 font-semibold text-slate-300 transition-all duration-300 hover:-translate-y-1 hover:border-white/40 hover:bg-white/10 hover:shadow-lg hover:shadow-white/10 active:scale-95"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
+              <EditNameCard
+                open={isEditingName}
+                onNameChange={setNewName}
+                newName={newName}
+                onSave={() => handleEditName(newName)}
+                onCancel={() => setIsEditingName(false)}
+              />
 
               <button
                 onClick={() => setIsEditingName(true)}
@@ -298,66 +236,23 @@ export default function Profile() {
                 Change Password
               </button>
 
-              {isUpdatingPassword && (
-                <div
-                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4"
-                  onClick={() => setIsUpdatingPassword(false)}
-                >
-                  <div
-                    className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-900/90 p-8 shadow-2xl"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <h2 className="mb-2 text-2xl font-bold text-white">
-                      Update Password
-                    </h2>
-
-                    <div className="flex flex-col gap-4">
-                      <input
-                        type="password"
-                        value={currentPassword}
-                        onChange={(e) => setCurrentPassword(e.target.value)}
-                        placeholder="Enter your current password"
-                        className="w-full rounded-xl border border-white/10 bg-slate-800 px-4 py-3 text-white outline-none transition focus:border-cyan-500"
-                      />
-
-                      <input
-                        type="password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder="Enter new password"
-                        className="w-full rounded-xl border border-white/10 bg-slate-800 px-4 py-3 text-white outline-none transition focus:border-cyan-500"
-                      />
-
-                      <input
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Confirm password"
-                        className="w-full rounded-xl border border-white/10 bg-slate-800 px-4 py-3 text-white outline-none transition focus:border-cyan-500"
-                      />
-                    </div>
-
-                    <div className="mt-6 flex gap-3">
-                      <button
-                        onClick={() => {
-                          handleUpdatePassword(currentPassword, newPassword);
-                          setIsUpdatingPassword(false);
-                        }}
-                        className="cursor-pointer flex-1 rounded-xl bg-cyan-500 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-cyan-400 hover:shadow-lg hover:shadow-cyan-500/30 active:scale-95"
-                      >
-                        Update
-                      </button>
-
-                      <button
-                        onClick={() => setIsUpdatingPassword(false)}
-                        className="cursor-pointer flex-1 rounded-xl border border-white/20 py-3 font-semibold text-slate-300 transition-all duration-300 hover:-translate-y-1 hover:border-white/40 hover:bg-white/10 hover:shadow-lg hover:shadow-white/10 active:scale-95"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
+              <UpdatePasswordCard
+                open={isUpdatingPassword}
+                currentPassword={currentPassword}
+                newPassword={newPassword}
+                confirmPassword={confirmPassword}
+                onCurrentPasswordChange={setCurrentPassword}
+                onNewPasswordChange={setNewPassword}
+                onConfirmPasswordChange={setConfirmPassword}
+                onUpdate={() => {
+                  handleUpdatePassword(currentPassword, newPassword);
+                  setIsUpdatingPassword(false);
+                }}
+                onCancel={() => {
+                  setIsUpdatingPassword(false)
+                  resetUpdatePasswordInputs()
+                }}
+              />
 
               <button
                 onClick={handleLogout}

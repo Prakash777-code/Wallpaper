@@ -1,4 +1,4 @@
-import { verifyToken } from "@/lib/auth";
+import { verifyAccessToken } from "@/lib/auth";
 import { NextApiResponse, NextApiRequest } from "next";
 import db from "@/lib/db";
 
@@ -7,7 +7,7 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   const { wallpaper_id } = req.query;
-  const user = verifyToken(req);
+  const user = verifyAccessToken(req);
 
   if (!user) {
     return res.status(401).json({

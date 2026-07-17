@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { PexelsPhoto, PexelsResponse } from "@/types/pexels";
 import { useRouter } from "next/router";
@@ -7,6 +6,8 @@ import { getPexelsWallpaper } from "@/service/pexelsWallpaper";
 import { getUserName, logout } from "@/service/auth";
 import { saveToFavourite } from "@/service/saveFavourites";
 import { getUserProfile } from "@/service/fetchProfile";
+import WallpaperCard from "@/components/WallpaperCard";
+import AuthPopup from "@/components/AuthPopup";
 
 export default function Home() {
   const [wallpaper, setWallpaper] = useState<PexelsPhoto[]>([]);
@@ -120,10 +121,10 @@ export default function Home() {
     }
   };
 
-  const hidePopUp = () =>{
-    setShowAuthPopup(false)
-    router.push("/")
-  }
+  const hidePopUp = () => {
+    setShowAuthPopup(false);
+    router.push("/");
+  };
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-white">
@@ -165,83 +166,20 @@ export default function Home() {
           />
         </div>
 
-        {showAuthPopup && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-            <div className="w-full max-w-md rounded-3xl border border-white/10 bg-slate-900/90 p-8 text-center shadow-2xl">
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-cyan-500/20 text-3xl">
-                🚀
-              </div>
-
-              <h2 className="text-3xl font-bold text-white">
-                Explore Unlimited
-              </h2>
-
-              <p className="mt-3 text-slate-300">
-                Register for free to unlock unlimited wallpapers, save your
-                favourites, and enjoy the full experience.
-              </p>
-
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <button
-                  onClick={() => router.push("/register")}
-                  className="flex-1 rounded-xl bg-cyan-500 px-5 py-3 font-semibold text-white transition hover:bg-cyan-400"
-                >
-                  Register Free
-                </button>
-
-                <button
-                  onClick={() =>{
-                     setShowAuthPopup(false)
-                     router.push("/")
-                  }}
-                  className="flex-1 rounded-xl border border-white/20 px-5 py-3 font-semibold text-slate-300 transition hover:bg-white/10"
-                >
-                  Maybe Later
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <AuthPopup open={showAuthPopup} close={() => setShowAuthPopup(false)} />
 
         {loading && (
           <p className="mb-8 text-center text-xl">Loading wallpapers...</p>
         )}
 
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {wallpaper?.map((photo) => (
-            <div
+          {wallpaper.map((photo) => (
+            <WallpaperCard
               key={photo.id}
-              className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-xl transition-all duration-500 hover:-translate-y-3 hover:shadow-cyan-500/20"
-            >
-              <div
-                onClick={() => window.open(photo.src.large, "_blank")}
-                className="cursor-pointer relative h-[420px] overflow-hidden"
-              >
-                <Image
-                  src={photo.src.large}
-                  alt={photo.photographer}
-                  fill
-                  className="cursor-pointer object-cover transition duration-700 group-hover:scale-110"
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent opacity-70 transition group-hover:opacity-100" />
-
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleFavourites(photo);
-                  }}
-                  disabled={favouriteLoading}
-                  className="cursor-pointer absolute right-4 top-4 rounded-full bg-white/20 p-3 text-xl backdrop-blur-lg transition hover:scale-110 hover:bg-red-500"
-                >
-                  ❤️
-                </button>
-
-                <div className="absolute bottom-0 left-0 w-full p-5">
-                  <h2 className="text-lg font-bold">{photo.photographer}</h2>
-                </div>
-              </div>
-            </div>
+              photo={photo}
+              favouriteLoading={favouriteLoading}
+              handleFavourites={handleFavourites}
+            />
           ))}
         </div>
 
