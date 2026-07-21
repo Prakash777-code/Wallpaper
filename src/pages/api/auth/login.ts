@@ -42,12 +42,6 @@ export default async function handler(
       });
     }
 
-    const token = jwt.sign(
-      { userId: user.id },
-      process.env.JWT_SECRET as string,
-      { expiresIn: "7d" },
-    );
-
     const accessToken = jwt.sign(
       {userId:user.id},
       process.env.JWT_SECRET as string,

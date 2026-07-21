@@ -8,6 +8,7 @@ import { saveToFavourite } from "@/service/saveFavourites";
 import { getUserProfile } from "@/service/fetchProfile";
 import WallpaperCard from "@/components/WallpaperCard";
 import AuthPopup from "@/components/AuthPopup";
+import { UserProfile } from "@/types/profile";
 
 export default function Home() {
   const [wallpaper, setWallpaper] = useState<PexelsPhoto[]>([]);
@@ -17,6 +18,7 @@ export default function Home() {
   const [userName, setUserName] = useState("");
   const [page, setPage] = useState(1);
   const [showAuthPopup, setShowAuthPopup] = useState(false);
+  const [profile, setProfile] = useState<UserProfile>();
 
   const router = useRouter();
 
@@ -36,11 +38,11 @@ export default function Home() {
   }, []);
 
   const fetchUserName = async () => {
-    const res = await getUserName();
-    if (res?.ok) {
-      const data = await res.json();
-      setUserName(data.userName);
+    const { ok, status, data } = await getUserProfile();
+    if (!ok) {
+      return;
     }
+    setUserName(data.name);
   };
 
   useEffect(() => {
@@ -100,30 +102,18 @@ export default function Home() {
     }
   };
 
-  const handleAuthPopup = () => {
-    setShowAuthPopup(true);
-  };
-
   const handleLoadMore = async () => {
     try {
-      const { status } = await getUserProfile();
-      console.log(status);
+      const { status, data } = await getUserProfile();
       if (status === 401) {
         setShowAuthPopup(true);
-        return;
       }
-
       if (status === 200) {
         setPage((prev) => prev + 1);
       }
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const hidePopUp = () => {
-    setShowAuthPopup(false);
-    router.push("/");
   };
 
   return (
@@ -135,7 +125,7 @@ export default function Home() {
           </h1>
 
           <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-white/10 px-5 py-2 shadow-lg backdrop-blur-md">
-            <span className="text-xl">👋</span>
+            <span className="text-xl">👋 </span>
             <span className="bg-gradient-to-r from-cyan-400 via-pink-500 to-yellow-400 bg-clip-text font-bold text-transparent">
               {userName}
             </span>

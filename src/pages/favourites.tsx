@@ -24,11 +24,6 @@ export default function Favourites() {
       setLoading(true);
 
       const { ok, status, data } = await fetchFavouriteWallpaper();
-
-      if (status === 401) {
-        setShowAuthPopup(true);
-        return;
-      }
       if (ok) {
         setFavourites(data);
       } else {

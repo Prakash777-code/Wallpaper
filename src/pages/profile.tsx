@@ -26,6 +26,7 @@ export default function Profile() {
   const router = useRouter();
 
   useEffect(() => {
+    console.log(fetchProfile)
     fetchProfile();
   }, []);
 

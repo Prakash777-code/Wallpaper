@@ -39,7 +39,7 @@ export default function WallpaperCard({
         </button>
 
         <div className="absolute bottom-0 left-0 w-full p-5">
-          <h2 className="text-lg font-bold">{photo.photographer}</h2>
+          <h2 className="text-lg font-bold text-white">{photo.photographer}</h2>
         </div>
       </div>
     </div>
