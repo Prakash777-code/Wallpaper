@@ -1,14 +1,14 @@
-import { getUserProfile } from "@/service/fetchProfile";
+import { getUserProfile } from "@/services/profile/fetchProfile";
 import { UserProfile } from "@/types/profile";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { logout } from "@/service/auth";
-import { editUserName } from "@/service/editName";
-import { updatePassword } from "@/service/updatePassword";
-import AuthPopup from "@/components/AuthPopup";
-import EditNameCard from "@/components/EditNameCard";
-import UpdatePasswordCard from "@/components/UpdatePasswordCard";
+import { logout } from "@/services/auth/logout";
+import { editUserName } from "@/services/profile/editName";
+import { updatePassword } from "@/services/profile/updatePassword";
+import AuthPopup from "@/components/Ui/AuthPopup";
+import EditNameCard from "@/components/Profile/EditNameCard";
+import UpdatePasswordCard from "@/components/Profile/UpdatePasswordCard";
 
 export default function Profile() {
   const [profile, setProfile] = useState<UserProfile>();
@@ -26,7 +26,6 @@ export default function Profile() {
   const router = useRouter();
 
   useEffect(() => {
-    console.log(fetchProfile)
     fetchProfile();
   }, []);
 
@@ -52,12 +51,13 @@ export default function Profile() {
 
       console.log(data);
 
-      if (status === 401) {
-        setShowAuthPopup(true);
-        return;
-      }
       if (!ok) {
+        if (status === 401) {
+          router.replace("/login");
+          return;
+        }
         toast.error(data.message);
+        return;
       }
 
       setProfile(data);
@@ -80,17 +80,24 @@ export default function Profile() {
       }
       setEditLoader(true);
       const { ok, status, data } = await editUserName(newName);
-      if (status === 401) {
+
+      if (status === 429) {
+        toast.error(data.message);
         return;
       }
 
-      if (ok) {
-        toast.success(data.message);
-        setIsEditingName(false);
-        fetchProfile();
-      } else {
+      if (!ok) {
+        if (status === 401) {
+          router.replace("/login");
+          return;
+        }
         toast.error(data.message);
+        return;
       }
+
+      toast.success(data.message);
+      setIsEditingName(false);
+      fetchProfile();
     } catch (error) {
       console.log(error);
       toast.error("Failed to change name");
@@ -121,15 +128,18 @@ export default function Profile() {
         currentPassword,
         newPassword,
       );
-      if (status === 401) {
-        toast.error("Login to update password");
+
+      if (!ok) {
+        if (status === 401) {
+          router.replace("/login");
+          return;
+        }
+        toast.error(data.message);
         return;
       }
-      if (ok) {
-        toast.success(data.message);
-      } else {
-        toast.error(data.message);
-      }
+
+      toast.success(data.message);
+      resetUpdatePasswordInputs();
     } catch (error) {
       console.error(error);
       toast.error("Failed to update password");
@@ -138,11 +148,11 @@ export default function Profile() {
     }
   };
 
-  const resetUpdatePasswordInputs = () =>{
-    setCurrentPassword("")
-    setNewPassword("")
-    setConfirmPassword("")
-  }
+  const resetUpdatePasswordInputs = () => {
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+  };
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black px-6 py-10 text-white">
@@ -250,8 +260,8 @@ export default function Profile() {
                   setIsUpdatingPassword(false);
                 }}
                 onCancel={() => {
-                  setIsUpdatingPassword(false)
-                  resetUpdatePasswordInputs()
+                  setIsUpdatingPassword(false);
+                  resetUpdatePasswordInputs();
                 }}
               />
 

@@ -1,4 +1,4 @@
-import { handleUserLogin } from "@/service/login";
+import { handleUserLogin } from "@/services/auth/login";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -19,8 +19,12 @@ export default function Login() {
 
     try {
       setLoading(true);
-      const{ok,status,data} = await handleUserLogin(email,password)
-      if(status === 401){
+      const { ok, status, data } = await handleUserLogin(email, password);
+      if (status === 401) {
+        toast.error(data.message);
+        return;
+      }
+      if(status === 429){
         toast.error(data.message)
         return
       }
@@ -45,7 +49,9 @@ export default function Login() {
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-white">Welcome Back 👋</h1>
 
-          <p className="mt-2 text-slate-300">Login to continue exploring wallpapers</p>
+          <p className="mt-2 text-slate-300">
+            Login to continue exploring wallpapers
+          </p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">

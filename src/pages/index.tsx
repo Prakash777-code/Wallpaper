@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { PexelsPhoto, PexelsResponse } from "@/types/pexels";
+import { PexelsPhoto } from "@/types/pexels";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import { getPexelsWallpaper } from "@/service/pexelsWallpaper";
-import { getUserName, logout } from "@/service/auth";
-import { saveToFavourite } from "@/service/saveFavourites";
-import { getUserProfile } from "@/service/fetchProfile";
-import WallpaperCard from "@/components/WallpaperCard";
-import AuthPopup from "@/components/AuthPopup";
+import { getPexelsWallpaper } from "@/services/Wallpapers/pexelsWallpaper";
+import { saveToFavourite } from "@/services/Wallpapers/saveFavourites";
+import { getUserProfile } from "@/services/profile/fetchProfile";
+import WallpaperCard from "@/components/Cards/WallpaperCard";
+import AuthPopup from "@/components/Ui/AuthPopup";
 import { UserProfile } from "@/types/profile";
+import { checkLoadMore } from "@/services/Wallpapers/loadMore";
 
 export default function Home() {
   const [wallpaper, setWallpaper] = useState<PexelsPhoto[]>([]);
@@ -59,8 +59,14 @@ export default function Home() {
           controller.signal,
         );
 
+        if(status === 429){
+          toast.error(data.message)
+          return
+        }
+
         if (!ok) {
           toast.error(data.message);
+          return
         }
         if (page === 1) {
           setWallpaper(data.photos);
@@ -85,9 +91,9 @@ export default function Home() {
       setFavouriteLoading(true);
       const { ok, status, data } = await saveToFavourite(wallpaper);
 
-      if (status === 401) {
-        router.push("/login");
-        return;
+      if(status === 429){
+        toast.error(data.message)
+        return
       }
 
       if (ok) {
@@ -104,7 +110,7 @@ export default function Home() {
 
   const handleLoadMore = async () => {
     try {
-      const { status, data } = await getUserProfile();
+      const {ok,status,data} = await checkLoadMore()
       if (status === 401) {
         setShowAuthPopup(true);
       }

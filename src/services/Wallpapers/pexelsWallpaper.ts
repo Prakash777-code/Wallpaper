@@ -8,11 +8,11 @@ export const getPexelsWallpaper = async (
     { signal },
   );
 
-  const data = await res.json()
+  const data = await res.json();
 
   return {
-    ok:res.ok,
-    status:res.status,
-    data
-  }
+    ok: res.ok,
+    status: res.status,
+    data,
+  };
 };

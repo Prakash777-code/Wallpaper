@@ -2,10 +2,10 @@ import { favourites } from "@/types/favourites";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import { unfavouriteWallpaper } from "@/service/unfavourite";
-import { fetchFavouriteWallpaper } from "@/service/fetchFavoutites";
-import FavouriteWallpaperCard from "@/components/FavouriteCard";
-import AuthPopup from "@/components/AuthPopup";
+import { unfavouriteWallpaper } from "@/services/Wallpapers/unfavourite";
+import { fetchFavouriteWallpaper } from "@/services/Wallpapers/fetchFavoutites";
+import FavouriteWallpaperCard from "@/components/Cards/FavouriteCard";
+import AuthPopup from "@/components/Ui/AuthPopup";
 
 export default function Favourites() {
   const [favourites, setFavourites] = useState<favourites[]>([]);
@@ -24,11 +24,12 @@ export default function Favourites() {
       setLoading(true);
 
       const { ok, status, data } = await fetchFavouriteWallpaper();
-      if (ok) {
-        setFavourites(data);
-      } else {
+
+      if (!ok) {
         toast.error(data.message);
+        return;
       }
+      setFavourites(data);
     } catch (error) {
       toast.error("Something went wrong");
       console.log(error);

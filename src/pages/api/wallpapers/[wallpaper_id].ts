@@ -1,6 +1,7 @@
 import { verifyAccessToken } from "@/lib/auth";
 import { NextApiResponse, NextApiRequest } from "next";
 import db from "@/lib/db";
+import { redis } from "@/lib/redis";
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,7 +18,7 @@ export default async function handler(
 
   if (req.method === "DELETE") {
     if (!wallpaper_id) {
-        console.log("Empty id");
+      console.log("Empty id");
       return res.status(400).json({
         message: "Empty wallpaper id",
       });
@@ -30,12 +31,13 @@ export default async function handler(
       );
 
       if (result.affectedRows === 0) {
-        console.log("Not found")
+        console.log("Not found");
         return res.status(404).json({
           message: "Wallpaper not found",
         });
       }
 
+      await redis.del(`Favourites:${user.userId}`);
       return res.status(200).json({
         message: "Wallpaper removed",
       });

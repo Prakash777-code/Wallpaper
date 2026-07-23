@@ -23,6 +23,7 @@ export const getUserProfile = async () =>{
                 data,
             }
         }
+        res = await fetch("/api/profile/userDetails")
     }
     const data = await res.json()
 

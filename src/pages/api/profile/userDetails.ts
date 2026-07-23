@@ -2,6 +2,7 @@ import { verifyAccessToken } from "@/lib/auth";
 import { NextApiRequest, NextApiResponse } from "next";
 import db from "@/lib/db";
 import { UserProfile } from "@/types/profile";
+import { redis } from "@/lib/redis";
 
 export default async function handler(
   req: NextApiRequest,
@@ -21,6 +22,13 @@ export default async function handler(
   }
 
   try {
+    const cachedKey = `Profile${user.userId}`;
+    const cachedData = (await redis.get(cachedKey));
+    if (cachedData) {
+      console.log("Cache hit");
+      return res.status(200).json(cachedData);
+    }
+    console.log("Cache miss")
     const [rows] = await db.query(
       "SELECT userName, email, created_at FROM users WHERE id=?",
       [user.userId],
@@ -38,6 +46,10 @@ export default async function handler(
       totalFavourites: (favouriteCount as any)[0].totalFavourites,
     };
 
+    await redis.set(cachedKey, result as UserProfile, {
+      ex: 60 * 30,
+    });
+    console.log("Wallverse hit");
     return res.status(200).json(result);
   } catch (error) {
     console.log(error);
