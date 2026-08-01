@@ -142,7 +142,6 @@ export default function Home() {
       if (!ok) {
         if (status === 401) {
           setShowAuthPopup(true);
-          return;
         }
       }
       if (status === 200) {
