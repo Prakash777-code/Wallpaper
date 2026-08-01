@@ -26,6 +26,9 @@ export default function Favourites() {
       const { ok, status, data } = await fetchFavouriteWallpaper();
 
       if (!ok) {
+        if(status === 401){
+          setShowAuthPopup(true)
+        }
         toast.error(data.message);
         return;
       }

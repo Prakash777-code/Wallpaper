@@ -1,3 +1,4 @@
+import AuthPopup from "@/components/Ui/AuthPopup";
 import { generateImage } from "@/services/ai/genearteImage";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -7,6 +8,7 @@ export default function Ai() {
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
+  const [showAuthPopup, setShowAuthPopup] = useState(false)
 
   const createImage = async (prompt: string) => {
     if (!prompt.trim()) {
@@ -19,6 +21,14 @@ export default function Ai() {
       setImageLoading(true);
       setImageUrl("")
       const { ok, status, data } = await generateImage(prompt);
+
+      if(!ok){
+        if(status === 401){
+          setShowAuthPopup(true)
+        }
+        toast.error(data.message)
+        return
+      }
 
       if (status === 429) {
         toast.error("You have reached your free image generator plan");
@@ -73,6 +83,8 @@ export default function Ai() {
               resize-none
             "
           />
+
+          <AuthPopup open={showAuthPopup} close={() => setShowAuthPopup(false)} />
 
           <div className="flex flex-wrap gap-3 mt-5">
             {[

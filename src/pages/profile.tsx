@@ -48,6 +48,13 @@ export default function Profile() {
     try {
       setLoading(true);
       const { ok, status, data } = await getUserProfile();
+      if(!ok){
+        if(status === 401){
+          setShowAuthPopup(true)
+        }
+        toast.error(data.message)
+        return
+      }
       console.log("User response", data)
       setProfile(data.data);
     } catch (error) {
