@@ -19,6 +19,10 @@ export default function Favourites() {
     fetchFavourites();
   }, []);
 
+  const openAuthPopup = () => {
+    setShowAuthPopup(true);
+  };
+
   const fetchFavourites = async () => {
     try {
       setLoading(true);
@@ -27,7 +31,8 @@ export default function Favourites() {
 
       if (!ok) {
         if(status === 401){
-          setShowAuthPopup(true)
+          openAuthPopup()
+          return
         }
         toast.error(data.message);
         return;

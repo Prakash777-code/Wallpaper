@@ -29,6 +29,10 @@ export default function Profile() {
     fetchProfile();
   }, []);
 
+  const openAuthPopup = () => {
+    setShowAuthPopup(true);
+  };
+
   const handleLogout = async () => {
     try {
       localStorage.clear();
@@ -50,9 +54,9 @@ export default function Profile() {
       const { ok, status, data } = await getUserProfile();
       if(!ok){
         if(status === 401){
-          setShowAuthPopup(true)
+          openAuthPopup()
+          return
         }
-        toast.error(data.message)
         return
       }
       console.log("User response", data)

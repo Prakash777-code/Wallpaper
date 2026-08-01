@@ -136,12 +136,17 @@ export default function Home() {
     }
   };
 
+  const openAuthPopup = () => {
+    setShowAuthPopup(true);
+  };
+
   const handleLoadMore = async () => {
     try {
       const { ok, status, data } = await checkLoadMore();
       if (!ok) {
         if (status === 401) {
-          setShowAuthPopup(true);
+          openAuthPopup()
+          return
         }
       }
       if (status === 200) {

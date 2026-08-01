@@ -10,6 +10,10 @@ export default function Ai() {
   const [imageLoading, setImageLoading] = useState(false);
   const [showAuthPopup, setShowAuthPopup] = useState(false)
 
+  const openAuthPopup = () => {
+    setShowAuthPopup(true);
+  };
+
   const createImage = async (prompt: string) => {
     if (!prompt.trim()) {
       toast.error("Prompt is required to generate image");
@@ -24,7 +28,8 @@ export default function Ai() {
 
       if(!ok){
         if(status === 401){
-          setShowAuthPopup(true)
+          openAuthPopup()
+          return
         }
         toast.error(data.message)
         return
