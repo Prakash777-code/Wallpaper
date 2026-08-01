@@ -19,9 +19,7 @@ export default function AuthPopup({ open, close }: AuthPopupProps) {
           🚀
         </div>
 
-        <h2 className="text-3xl font-bold text-white">
-          Explore Unlimited
-        </h2>
+        <h2 className="text-3xl font-bold text-white">Explore Unlimited</h2>
 
         <p className="mt-3 text-slate-300">
           Register for free to unlock unlimited wallpapers, save your
@@ -39,7 +37,6 @@ export default function AuthPopup({ open, close }: AuthPopupProps) {
           <button
             onClick={() => {
               close();
-              router.push("/");
             }}
             className="cursor-pointer flex-1 rounded-xl border border-white/20 px-5 py-3 font-semibold text-slate-300 transition hover:bg-white/10 transition-all duration-300 hover:-translate-y-1"
           >
