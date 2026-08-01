@@ -39,7 +39,7 @@ export default function Favourites() {
     }
   };
 
-  const unfavourite = async (wallpaperId: bigint) => {
+  const unfavourite = async (wallpaperId: string) => {
     try {
       setDeleteLoader(true);
       const { ok, status, data } = await unfavouriteWallpaper(wallpaperId);
