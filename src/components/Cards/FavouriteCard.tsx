@@ -2,7 +2,7 @@ import { favourites } from "@/types/favourites";
 
 type FavouriteWallpaperCardProps = {
   wallpaper: favourites;
-  unfavourite: (wallpaperId: bigint) => void;
+  unfavourite: (wallpaperId: string) => void;
 };
 
 export default function FavouriteWallpaperCard({
