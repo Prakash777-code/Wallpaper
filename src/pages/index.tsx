@@ -139,10 +139,10 @@ export default function Home() {
   const handleLoadMore = async () => {
     try {
       const { ok, status, data } = await checkLoadMore();
-      if (status === 401) {
-        console.log("Showing auth popup");
-        setShowAuthPopup(true);
-        return;
+      if(!ok){
+        if(status === 401){
+          setShowAuthPopup(true)
+        }
       }
       if (status === 200) {
         setPage((prev) => prev + 1);
