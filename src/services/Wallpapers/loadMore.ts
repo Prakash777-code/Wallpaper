@@ -10,7 +10,7 @@ export const checkLoadMore = async () => {
     if (getRes.status === 401) {
       return {
         ok: false,
-        status: getRes.status,
+        status: 401,
         data: {
           message: "Unauthorised",
         },
