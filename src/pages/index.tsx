@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PexelsPhoto } from "@/types/pexels";
+import { PexelsBackendResponse, PexelsPhoto } from "@/types/pexels";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { getPexelsWallpaper } from "@/services/Wallpapers/pexelsWallpaper";
@@ -11,7 +11,7 @@ import { UserProfile } from "@/types/profile";
 import { checkLoadMore } from "@/services/Wallpapers/loadMore";
 
 export default function Home() {
-  const [wallpaper, setWallpaper] = useState<PexelsPhoto[]>([]);
+  const [wallpaper, setWallpaper] = useState<PexelsBackendResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState("cars");
   const [favouriteLoading, setFavouriteLoading] = useState(false);
@@ -19,8 +19,29 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const [showAuthPopup, setShowAuthPopup] = useState(false);
   const [profile, setProfile] = useState<UserProfile>();
+  const [isVisible, setIsVisible] = useState(false);
 
   const router = useRouter();
+
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.scrollY > 900) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   useEffect(() => {
     const savedQuery = localStorage.getItem("query");
@@ -42,15 +63,18 @@ export default function Home() {
     if (!ok) {
       return;
     }
-    setUserName(data.name);
+    setUserName(data.data.name);
   };
 
   useEffect(() => {
+    console.log("Entered useeffect");
     if (!query.trim()) {
+      console.log("query is empty");
       return;
     }
     const controller = new AbortController();
     const timer = setTimeout(async () => {
+      console.log("Calling api");
       try {
         setLoading(true);
         const { ok, status, data } = await getPexelsWallpaper(
@@ -59,19 +83,21 @@ export default function Home() {
           controller.signal,
         );
 
-        if(status === 429){
-          toast.error(data.message)
-          return
+        console.log(data.data);
+
+        if (status === 429) {
+          toast.error(data.message);
+          return;
         }
 
         if (!ok) {
           toast.error(data.message);
-          return
+          return;
         }
         if (page === 1) {
-          setWallpaper(data.photos);
+          setWallpaper(data.data);
         } else {
-          setWallpaper((prev) => [...prev, ...data.photos]);
+          setWallpaper((prev) => [...prev, ...data.data]);
         }
       } catch (error) {
         console.log(error);
@@ -86,16 +112,18 @@ export default function Home() {
     };
   }, [query, page]);
 
-  const handleFavourites = async (wallpaper: PexelsPhoto) => {
+  const handleFavourites = async (wallpaper: PexelsBackendResponse) => {
     try {
       setFavouriteLoading(true);
       const { ok, status, data } = await saveToFavourite(wallpaper);
-
-      if(status === 429){
-        toast.error(data.message)
-        return
+      if (status === 429) {
+        toast.error("Too many request. Please try again later");
+        return;
       }
-
+      if (status === 409) {
+        toast.error("Wallpaper is already in your favourites");
+        return;
+      }
       if (ok) {
         toast.success(data.message);
       } else {
@@ -110,9 +138,11 @@ export default function Home() {
 
   const handleLoadMore = async () => {
     try {
-      const {ok,status,data} = await checkLoadMore()
+      const { ok, status, data } = await checkLoadMore();
       if (status === 401) {
+        console.log("Showing auth popup");
         setShowAuthPopup(true);
+        return;
       }
       if (status === 200) {
         setPage((prev) => prev + 1);
@@ -169,14 +199,15 @@ export default function Home() {
         )}
 
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {wallpaper.map((photo) => (
-            <WallpaperCard
-              key={photo.id}
-              photo={photo}
-              favouriteLoading={favouriteLoading}
-              handleFavourites={handleFavourites}
-            />
-          ))}
+          {Array.isArray(wallpaper) &&
+            wallpaper.map((photo) => (
+              <WallpaperCard
+                key={photo.wallpaperId}
+                photo={photo}
+                favouriteLoading={favouriteLoading}
+                handleFavourites={handleFavourites}
+              />
+            ))}
         </div>
 
         <div className="mt-12 flex justify-center">
@@ -189,6 +220,16 @@ export default function Home() {
           </button>
         </div>
       </div>
+
+      {isVisible && (
+        <button
+          onClick={scrollToTop}
+          className="cursor-pointer fixed bottom-6 right-6 z-[1000] h-14 w-14 rounded-full bg-gradient-to-br from-blue-600 to-indigo-700 text-2xl text-white shadow-[0_10px_30px_rgba(37,99,235,0.45)] transition-all duration-300 hover:-translate-y-1 hover:scale-110 active:scale-95"
+          aria-label="Scroll to top"
+        >
+          ↑
+        </button>
+      )}
     </main>
   );
 }

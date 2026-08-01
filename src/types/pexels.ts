@@ -11,3 +11,9 @@ export interface PexelsPhoto {
 export interface PexelsResponse {
   photos: PexelsPhoto[];
 }
+
+export interface PexelsBackendResponse{
+  wallpaperId:number,
+  imageUrl:string,
+  photographer:string
+}

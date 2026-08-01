@@ -1,7 +1,7 @@
 export interface favourites{
     id:number;
-    user_id:number;
+    userId:number;
     photographer:string
-    wallpaper_id:string;
-    image_url:string;
+    wallpaperId:bigint;
+    imageUrl:string;
 }

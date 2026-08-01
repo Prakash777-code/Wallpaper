@@ -4,11 +4,13 @@ export const getPexelsWallpaper = async (
   signal: AbortSignal,
 ) => {
   const res = await fetch(
-    `/api/pexels/wallpaper?query=${encodeURIComponent(query)}&page=${page}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/pexels?query=${encodeURIComponent(query)}&page=${page}&perPage=16`,
     { signal },
   );
 
   const data = await res.json();
+
+  console.log(data)
 
   return {
     ok: res.ok,

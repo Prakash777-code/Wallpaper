@@ -36,6 +36,13 @@ export default function Navbar() {
           </Link>
 
           <Link
+            href="/ai"
+            className="flex-1 rounded-full px-4 py-2 text-center font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:bg-red-500 hover:shadow-lg hover:shadow-red-500/50 md:flex-none md:px-5"
+          >
+           ✨ AI
+          </Link>
+
+          <Link
             href="/profile"
             className="flex-1 rounded-full px-4 py-2 text-center font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:bg-cyan-500 hover:shadow-lg hover:shadow-cyan-500/50 md:flex-none md:px-5"
           >

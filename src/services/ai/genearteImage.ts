@@ -1,16 +1,12 @@
-import { PexelsBackendResponse, PexelsPhoto } from "@/types/pexels";
-
-export const saveToFavourite = async (wallpaper: PexelsBackendResponse) => {
-  let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/favourites`, {
+export async function generateImage(prompt: string) {
+  let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ai/image`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     credentials: "include",
     body: JSON.stringify({
-      wallpaperId: wallpaper.wallpaperId,
-      imageUrl: wallpaper.imageUrl,
-      photographer: wallpaper.photographer,
+      prompt,
     }),
   });
 
@@ -19,33 +15,35 @@ export const saveToFavourite = async (wallpaper: PexelsBackendResponse) => {
       method: "POST",
       credentials: "include",
     });
+
     if (postRes.status === 401) {
       return {
         ok: false,
         status: postRes.status,
         data: {
-          message: "Unauthorized",
+          message: "Unauthorised",
         },
       };
     }
+
     if (!postRes.ok) {
       const data = await postRes.json();
+
       return {
         ok: false,
         status: postRes.status,
         data,
       };
     }
-    res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/favourites`, {
+
+    res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/ai/image`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
       body: JSON.stringify({
-        wallpaperId: wallpaper.wallpaperId,
-        imageUrl: wallpaper.imageUrl,
-        photographer: wallpaper.photographer,
+        prompt,
       }),
     });
   }
@@ -57,4 +55,4 @@ export const saveToFavourite = async (wallpaper: PexelsBackendResponse) => {
     status: res.status,
     data,
   };
-};
+}

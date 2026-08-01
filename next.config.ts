@@ -6,17 +6,12 @@ const nextConfig = {
         protocol: "https",
         hostname: "images.pexels.com",
       },
-
-       {
-        protocol: "https",
-        hostname: "th.wallhaven.cc",
-      },
-      {
-        protocol: "https",
-        hostname: "w.wallhaven.cc",
-      },
     ],
   },
 };
+
+export default nextConfig;
+
+
 
 module.exports = nextConfig;

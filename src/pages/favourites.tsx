@@ -29,7 +29,8 @@ export default function Favourites() {
         toast.error(data.message);
         return;
       }
-      setFavourites(data);
+      console.log(data);
+      setFavourites(data.data);
     } catch (error) {
       toast.error("Something went wrong");
       console.log(error);
@@ -38,15 +39,16 @@ export default function Favourites() {
     }
   };
 
-  const unfavourite = async (wallpaperId: number) => {
+  const unfavourite = async (wallpaperId: bigint) => {
     try {
       setDeleteLoader(true);
       const { ok, status, data } = await unfavouriteWallpaper(wallpaperId);
 
-      if (status === 401) {
-        setShowAuthPopup(true);
-        return;
+      if(status === 429){
+        toast.error("Too many requets. Please try again later")
+        return
       }
+
       if (ok) {
         toast.success(data.message);
         fetchFavourites();

@@ -48,19 +48,8 @@ export default function Profile() {
     try {
       setLoading(true);
       const { ok, status, data } = await getUserProfile();
-
-      console.log(data);
-
-      if (!ok) {
-        if (status === 401) {
-          router.replace("/login");
-          return;
-        }
-        toast.error(data.message);
-        return;
-      }
-
-      setProfile(data);
+      console.log("User response", data)
+      setProfile(data.data);
     } catch (error) {
       console.log(error);
     } finally {

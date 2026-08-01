@@ -1,9 +1,12 @@
 export const getUserProfile = async () =>{
 
-    let res = await fetch("/api/profile/userDetails")
+    let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`,{
+        credentials:"include"
+    })
     if(res.status === 401){
-        const getRes = await fetch("/api/auth/refresh",{
-            method:"POST"
+        const getRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,{
+            method:"POST",
+            credentials:"include"
         })
         if(getRes.status === 401){
             return{
@@ -23,7 +26,9 @@ export const getUserProfile = async () =>{
                 data,
             }
         }
-        res = await fetch("/api/profile/userDetails")
+        res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`,{
+            credentials:"include"
+        })
     }
     const data = await res.json()
 

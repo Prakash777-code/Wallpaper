@@ -2,7 +2,7 @@ import { favourites } from "@/types/favourites";
 
 type FavouriteWallpaperCardProps = {
   wallpaper: favourites;
-  unfavourite: (wallpaperId: number) => void;
+  unfavourite: (wallpaperId: bigint) => void;
 };
 
 export default function FavouriteWallpaperCard({
@@ -12,11 +12,11 @@ export default function FavouriteWallpaperCard({
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-xl transition-all duration-500 hover:-translate-y-3 hover:shadow-cyan-500/20">
       <div
-        onClick={() => window.open(wallpaper.image_url, "_blank")}
+        onClick={() => window.open(wallpaper.imageUrl, "_blank")}
         className=" cursor-pointer relative h-[420px] overflow-hidden"
       >
         <img
-          src={wallpaper.image_url}
+          src={wallpaper.imageUrl}
           alt={wallpaper.photographer ?? "Wallpaper"}
           className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
         />
@@ -26,7 +26,7 @@ export default function FavouriteWallpaperCard({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            unfavourite(wallpaper.wallpaper_id);
+            unfavourite(wallpaper.wallpaperId);
           }}
           className="cursor-pointer absolute right-4 top-4 rounded-full bg-red-500/90 p-3 text-white backdrop-blur transition hover:scale-110"
         >

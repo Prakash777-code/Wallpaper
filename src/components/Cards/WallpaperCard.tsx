@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { PexelsPhoto } from "@/types/pexels";
+import { PexelsBackendResponse, PexelsPhoto } from "@/types/pexels";
 
 type WallpaperCardProps = {
-  photo: PexelsPhoto;
+  photo: PexelsBackendResponse;
   favouriteLoading: boolean;
-  handleFavourites: (photo: PexelsPhoto) => void;
+  handleFavourites: (photo: PexelsBackendResponse) => void;
 };
 
 export default function WallpaperCard({
@@ -15,11 +15,11 @@ export default function WallpaperCard({
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-xl transition-all duration-500 hover:-translate-y-3 hover:shadow-cyan-500/20">
       <div
-        onClick={() => window.open(photo.src.large, "_blank")}
+        onClick={() => window.open(photo.imageUrl, "_blank")}
         className="relative h-[420px] cursor-pointer overflow-hidden"
       >
         <Image
-          src={photo.src.large}
+          src={photo.imageUrl}
           alt={photo.photographer}
           fill
           className="object-cover transition duration-700 group-hover:scale-110"
