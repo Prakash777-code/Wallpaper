@@ -6,6 +6,7 @@ import { unfavouriteWallpaper } from "@/services/Wallpapers/unfavourite";
 import { fetchFavouriteWallpaper } from "@/services/Wallpapers/fetchFavoutites";
 import FavouriteWallpaperCard from "@/components/Cards/FavouriteCard";
 import AuthPopup from "@/components/Ui/AuthPopup";
+import { getUserStatus } from "@/services/profile/status";
 
 export default function Favourites() {
   const [favourites, setFavourites] = useState<favourites[]>([]);
@@ -24,15 +25,20 @@ export default function Favourites() {
   };
 
   const fetchFavourites = async () => {
+    const { status } = await getUserStatus();
+    if (status === 401) {
+      openAuthPopup();
+      return;
+    }
     try {
       setLoading(true);
 
       const { ok, status, data } = await fetchFavouriteWallpaper();
 
       if (!ok) {
-        if(status === 401){
-          openAuthPopup()
-          return
+        if (status === 401) {
+          openAuthPopup();
+          return;
         }
         toast.error(data.message);
         return;
@@ -52,9 +58,9 @@ export default function Favourites() {
       setDeleteLoader(true);
       const { ok, status, data } = await unfavouriteWallpaper(wallpaperId);
 
-      if(status === 429){
-        toast.error("Too many requets. Please try again later")
-        return
+      if (status === 429) {
+        toast.error("Too many requets. Please try again later");
+        return;
       }
 
       if (ok) {

@@ -10,7 +10,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-900 shadow-2xl">
-      <nav className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-4 sm:px-6 md:relative md:flex-row md:justify-between md:px-8">
+      <nav className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-4 sm:px-6 md:flex-row md:justify-between md:px-8">
         <Link
           href="/"
           className="text-3xl font-extrabold tracking-wide text-white transition duration-300 hover:scale-105"
@@ -20,31 +20,31 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div className="flex w-full justify-center gap-2 rounded-full border border-white/10 bg-white/10 p-2 backdrop-blur-md md:absolute md:left-1/2 md:w-auto md:-translate-x-1/2">
+        <div className="flex w-full justify-start gap-2 overflow-x-auto rounded-full border border-white/10 bg-white/10 p-2 backdrop-blur-md scrollbar-hide md:absolute md:left-1/2 md:w-auto md:-translate-x-1/2 md:justify-center">
           <Link
             href="/"
-            className="flex-1 rounded-full px-4 py-2 text-center font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:bg-pink-500 hover:shadow-lg hover:shadow-pink-500/50 md:flex-none md:px-5"
+            className="shrink-0 rounded-full px-4 py-2 text-center font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:bg-pink-500 hover:shadow-lg hover:shadow-pink-500/50 md:flex-none md:px-5"
           >
             🏠 Home
           </Link>
 
           <Link
             href="/favourites"
-            className="flex-1 rounded-full px-4 py-2 text-center font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:bg-red-500 hover:shadow-lg hover:shadow-red-500/50 md:flex-none md:px-5"
+            className="shrink-0 rounded-full px-4 py-2 text-center font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:bg-red-500 hover:shadow-lg hover:shadow-red-500/50 md:flex-none md:px-5"
           >
             ❤️ Favourites
           </Link>
 
           <Link
             href="/ai"
-            className="flex-1 rounded-full px-4 py-2 text-center font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:bg-red-500 hover:shadow-lg hover:shadow-red-500/50 md:flex-none md:px-5"
+            className="shrink-0 rounded-full px-4 py-2 text-center font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/50 md:flex-none md:px-5"
           >
-           ✨ AI
+            ✨ AI
           </Link>
 
           <Link
             href="/profile"
-            className="flex-1 rounded-full px-4 py-2 text-center font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:bg-cyan-500 hover:shadow-lg hover:shadow-cyan-500/50 md:flex-none md:px-5"
+            className="shrink-0 rounded-full px-4 py-2 text-center font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:bg-cyan-500 hover:shadow-lg hover:shadow-cyan-500/50 md:flex-none md:px-5"
           >
             👤 Profile
           </Link>

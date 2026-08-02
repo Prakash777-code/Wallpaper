@@ -23,7 +23,8 @@ export default function AuthPopup({ open, close }: AuthPopupProps) {
 
         <p className="mt-3 text-slate-300">
           Register for free to unlock unlimited wallpapers, save your
-          favourites, and enjoy the full experience.
+          favourites, create stunning AI-generated wallpapers, and enjoy the
+          full WallVerse experience.
         </p>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -35,7 +36,9 @@ export default function AuthPopup({ open, close }: AuthPopupProps) {
           </button>
 
           <button
-            onClick={close}
+            onClick={() => {
+              (close(), router.push("/"));
+            }}
             className="cursor-pointer flex-1 rounded-xl border border-white/20 px-5 py-3 font-semibold text-slate-300 transition hover:bg-white/10 transition-all duration-300 hover:-translate-y-1"
           >
             Maybe Later

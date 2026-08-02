@@ -1,6 +1,7 @@
 import AuthPopup from "@/components/Ui/AuthPopup";
 import { generateImage } from "@/services/ai/genearteImage";
-import { useState } from "react";
+import { getUserStatus } from "@/services/profile/status";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function Ai() {
@@ -13,6 +14,18 @@ export default function Ai() {
   const openAuthPopup = () => {
     setShowAuthPopup(true);
   };
+
+  useEffect(()=>{
+    userStatus()
+  },[])
+
+  const userStatus = async () =>{
+    const {status} = await getUserStatus()
+    if(status === 401){
+      openAuthPopup()
+      return
+    }
+  }
 
   const createImage = async (prompt: string) => {
     if (!prompt.trim()) {
@@ -28,7 +41,6 @@ export default function Ai() {
 
       if(!ok){
         if(status === 401){
-          openAuthPopup()
           return
         }
         toast.error(data.message)

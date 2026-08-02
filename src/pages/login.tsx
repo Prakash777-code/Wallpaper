@@ -14,24 +14,22 @@ export default function Login() {
     e.preventDefault();
 
     if (!email || !password) {
+      toast.error("Email and password are required to login");
       return;
     }
 
     try {
       setLoading(true);
       const { ok, status, data } = await handleUserLogin(email, password);
-      if (status === 401) {
+      if (status === 429) {
         toast.error(data.message);
         return;
       }
-      if(status === 429){
-        toast.error(data.message)
-        return
-      }
       if (ok) {
-        router.push("/");
+        router.replace("/");
       } else {
-        console.log(status);
+        toast.error("Invalid email or password")
+        return
       }
     } catch (error) {
       console.log(error);

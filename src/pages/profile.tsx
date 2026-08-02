@@ -9,6 +9,7 @@ import { updatePassword } from "@/services/profile/updatePassword";
 import AuthPopup from "@/components/Ui/AuthPopup";
 import EditNameCard from "@/components/Profile/EditNameCard";
 import UpdatePasswordCard from "@/components/Profile/UpdatePasswordCard";
+import { getUserStatus } from "@/services/profile/status";
 
 export default function Profile() {
   const [profile, setProfile] = useState<UserProfile>();
@@ -26,11 +27,19 @@ export default function Profile() {
   const router = useRouter();
 
   useEffect(() => {
-    fetchProfile();
+    fetchProfile()
   }, []);
 
   const openAuthPopup = () => {
     setShowAuthPopup(true);
+  };
+
+  const getUsertStatus = async () => {
+    const { status } = await getUserStatus();
+    if (status === 401) {
+      openAuthPopup();
+      return;
+    }
   };
 
   const handleLogout = async () => {
@@ -49,17 +58,21 @@ export default function Profile() {
   };
 
   const fetchProfile = async () => {
+    const {status} = await getUserStatus()
+    if(status === 401){
+      openAuthPopup()
+      return
+    }
     try {
       setLoading(true);
       const { ok, status, data } = await getUserProfile();
-      if(!ok){
-        if(status === 401){
-          openAuthPopup()
-          return
+      if (!ok) {
+        if (status === 401) {
+          return;
         }
-        return
+        return;
       }
-      console.log("User response", data)
+      console.log("User response", data);
       setProfile(data.data);
     } catch (error) {
       console.log(error);
