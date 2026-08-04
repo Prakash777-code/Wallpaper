@@ -145,8 +145,8 @@ export default function Home() {
       const { ok, status, data } = await checkLoadMore();
       if (!ok) {
         if (status === 401) {
-          openAuthPopup()
-          return
+          openAuthPopup();
+          return;
         }
       }
       if (status === 200) {
@@ -160,6 +160,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-white">
       <div className="flex items-center justify-between px-6 py-4">
+        
         <div>
           <h1 className="text-2xl font-bold text-white">
             Explore Universe of Wallpapers
@@ -173,6 +174,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+
       <div className="mx-auto max-w-7xl px-6 py-10">
         <h1 className="mb-3 text-center text-5xl font-extrabold">
           Find Your Perfect
@@ -211,6 +213,7 @@ export default function Home() {
                 photo={photo}
                 favouriteLoading={favouriteLoading}
                 handleFavourites={handleFavourites}
+                 openAuthPopup={() => setShowAuthPopup(true)}
               />
             ))}
         </div>

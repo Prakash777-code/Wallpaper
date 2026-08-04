@@ -27,7 +27,7 @@ export default function Profile() {
   const router = useRouter();
 
   useEffect(() => {
-    fetchProfile()
+    fetchProfile();
   }, []);
 
   const openAuthPopup = () => {
@@ -58,10 +58,10 @@ export default function Profile() {
   };
 
   const fetchProfile = async () => {
-    const {status} = await getUserStatus()
-    if(status === 401){
-      openAuthPopup()
-      return
+    const { status } = await getUserStatus();
+    if (status === 401) {
+      openAuthPopup();
+      return;
     }
     try {
       setLoading(true);
@@ -209,24 +209,34 @@ export default function Profile() {
           <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
             <h2 className="mb-6 text-xl font-semibold">Statistics</h2>
 
-            <div className="rounded-2xl border border-cyan-500/20 bg-slate-900/60 p-8">
-              <div className="text-center">
-                <p className="text-sm uppercase tracking-widest text-gray-400">
-                  Total Favourites
+            <div className="grid grid-cols-2 gap-4">
+              <div className="rounded-2xl border border-cyan-500/20 bg-slate-900/60 p-5 text-center">
+                <p className="text-xs uppercase tracking-widest text-gray-400">
+                  Favourites
                 </p>
 
-                <h1 className="mt-3 text-6xl font-extrabold text-cyan-400">
+                <h1 className="mt-3 text-4xl font-extrabold text-cyan-400">
                   {profile?.totalFavourites}
                 </h1>
               </div>
 
-              <button
-                onClick={() => router.push("/favourites")}
-                className="cursor-pointer mt-8 w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 font-semibold transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:from-cyan-400 hover:to-blue-500 hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95"
-              >
-                ❤️ My Favourites
-              </button>
+              <div className="rounded-2xl border border-violet-500/20 bg-slate-900/60 p-5 text-center">
+                <p className="text-xs uppercase tracking-widest text-gray-400">
+                  Downloads
+                </p>
+
+                <h1 className="mt-3 text-4xl font-extrabold text-violet-400">
+                  {profile?.downloads}
+                </h1>
+              </div>
             </div>
+
+            <button
+              onClick={() => router.push("/favourites")}
+              className="mt-6 w-full cursor-pointer rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 font-semibold transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:from-cyan-400 hover:to-blue-500 hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95"
+            >
+              ❤️ My Favourites
+            </button>
           </div>
 
           <AuthPopup

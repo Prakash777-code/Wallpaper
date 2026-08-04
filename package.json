@@ -15,6 +15,7 @@
     "cookie": "^0.6.0",
     "jose": "^6.2.3",
     "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^1.28.0",
     "mysql2": "^3.22.5",
     "next": "16.2.10",
     "react": "19.2.4",
@@ -33,7 +34,7 @@
     "tailwindcss": "^4",
     "typescript": "^5"
   },
-   "engines": {
+  "engines": {
     "node": "24.x"
   }
 }
