@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import db from "@/lib/db";
 import { UserProfile } from "@/types/profile";
 import { redis } from "@/lib/redis";
+import { NewProfile } from "./newProfile";
 
 export default async function handler(
   req: NextApiRequest,
@@ -39,7 +40,7 @@ export default async function handler(
       [user.userId],
     );
 
-    const result: UserProfile = {
+    const result: NewProfile = {
       name: (rows as any)[0].userName,
       email: (rows as any)[0].email,
       memberSince: (rows as any)[0].created_at,
