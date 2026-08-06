@@ -68,7 +68,7 @@ export default function WallpaperCard({
 
             downloadWallpaper(
               photo.imageUrl,
-              photo.wallpaperId,
+               String(photo.wallpaperId),
               photo.photographer,
             );
           }}

@@ -160,7 +160,6 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-white">
       <div className="flex items-center justify-between px-6 py-4">
-        
         <div>
           <h1 className="text-2xl font-bold text-white">
             Explore Universe of Wallpapers
@@ -213,7 +212,7 @@ export default function Home() {
                 photo={photo}
                 favouriteLoading={favouriteLoading}
                 handleFavourites={handleFavourites}
-                 openAuthPopup={() => setShowAuthPopup(true)}
+                openAuthPopup={() => setShowAuthPopup(true)}
               />
             ))}
         </div>

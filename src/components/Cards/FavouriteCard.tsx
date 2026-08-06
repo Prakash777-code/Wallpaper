@@ -1,4 +1,5 @@
 import { favourites } from "@/types/favourites";
+import { downloadWallpaper } from "@/services/Wallpapers/downloadWallpaper";
 
 type FavouriteWallpaperCardProps = {
   wallpaper: favourites;
@@ -26,11 +27,25 @@ export default function FavouriteWallpaperCard({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            unfavourite(wallpaper.wallpaperId);
+            unfavourite(String(wallpaper.wallpaperId));
           }}
           className="cursor-pointer absolute right-4 top-4 rounded-full bg-red-500/90 p-3 text-white backdrop-blur transition hover:scale-110"
         >
           ✖
+        </button>
+
+        <button
+          onClick={async (e) => {
+            e.stopPropagation();
+            downloadWallpaper(
+              wallpaper.imageUrl,
+              String(wallpaper.wallpaperId),
+              wallpaper.photographer,
+            );
+          }}
+          className="absolute bottom-4 right-4 z-20 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-lg transition hover:scale-110 hover:bg-cyan-500"
+        >
+          ↓
         </button>
       </div>
 
