@@ -1,7 +1,8 @@
-import WallpaperCard from "@/components/Cards/WallpaperCard";
+import AuthPopup from "@/components/Ui/AuthPopup";
+import { getUserStatus } from "@/services/profile/status";
 import { clearAllDownloads } from "@/services/Wallpapers/clearDonwnloads";
-import { downloadWallpaper } from "@/services/Wallpapers/downloadWallpaper";
 import { fetchDownloadedWallpapers } from "@/services/Wallpapers/fetchDownloads";
+import { removeFromDownloads } from "@/services/Wallpapers/removeDownload";
 import { saveToFavourite } from "@/services/Wallpapers/saveFavourites";
 import { PexelsBackendResponse } from "@/types/pexels";
 import { useEffect, useState } from "react";
@@ -16,6 +17,18 @@ export default function Downloads() {
 
   const [loading, setLoading] = useState(false);
 
+  const checkAuthentication = async () => {
+    const { status } = await getUserStatus();
+    if (status === 401) {
+      setShowAuthPopup(true);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    checkAuthentication();
+  }, []);
+
   const getDownloadedWallpapers = async () => {
     console.log("Download wallpaper function called");
     try {
@@ -26,7 +39,6 @@ export default function Downloads() {
         console.log("Error in api");
         return;
       }
-
       setDownloadedWallpapers(data.data);
     } catch (error) {
       console.log(error);
@@ -64,12 +76,13 @@ export default function Downloads() {
     }
   };
 
-  const clear = async () => {
-    const{ok,status,data} = await clearAllDownloads()
-    if(ok){
-      fetchDownloadedWallpapers()
-      toast.success(data.message)
-    }
+
+  const deleteDownload = async (wallpaerId:number, imageUrl:string) => {
+      const {ok,data} = await removeFromDownloads(wallpaerId,imageUrl)
+      if(ok){
+        getDownloadedWallpapers()
+        toast.success(data.message)
+      }
   }
 
   return (
@@ -82,6 +95,8 @@ export default function Downloads() {
             Wallpapers you have downloaded recently.
           </p>
         </div>
+
+        <AuthPopup open={showAuthPopup} close={() => setShowAuthPopup(false)} />
 
         {loading ? (
           <div className="flex min-h-[350px] items-center justify-center">
@@ -130,6 +145,16 @@ export default function Downloads() {
                     className="cursor-pointer absolute left-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-lg backdrop-blur-lg transition hover:scale-110 hover:bg-red-500 disabled:cursor-not-allowed"
                   >
                     ❤️
+                  </button>
+
+                  <button
+                    onClick={(e) => {
+                      deleteDownload(wallpaper.wallpaperId, wallpaper.imageUrl)
+                      e.stopPropagation();
+                    }}
+                    className="absolute right-3 top-3 cursor-pointer rounded-full bg-red-500/90 p-2 text-sm text-white backdrop-blur transition hover:scale-110"
+                  >
+                    ✖
                   </button>
 
                   <div className="absolute bottom-0 left-0 z-10 w-full p-5">

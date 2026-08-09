@@ -1,6 +1,8 @@
 import AuthPopup from "@/components/Ui/AuthPopup";
 import { generateImage } from "@/services/ai/genearteImage";
 import { getUserStatus } from "@/services/profile/status";
+import { favouriteAiGenerated } from "@/services/Wallpapers/favouriteAiGenerated";
+import { AiType } from "@/types/favouriteAi";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -9,23 +11,24 @@ export default function Ai() {
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
-  const [showAuthPopup, setShowAuthPopup] = useState(false)
+  const [showAuthPopup, setShowAuthPopup] = useState(false);
+  const [aiData, setAiData] = useState<AiType | null>(null);
 
   const openAuthPopup = () => {
     setShowAuthPopup(true);
   };
 
-  useEffect(()=>{
-    userStatus()
-  },[])
+  useEffect(() => {
+    userStatus();
+  }, []);
 
-  const userStatus = async () =>{
-    const {status} = await getUserStatus()
-    if(status === 401){
-      openAuthPopup()
-      return
+  const userStatus = async () => {
+    const { status } = await getUserStatus();
+    if (status === 401) {
+      openAuthPopup();
+      return;
     }
-  }
+  };
 
   const createImage = async (prompt: string) => {
     if (!prompt.trim()) {
@@ -36,16 +39,26 @@ export default function Ai() {
     try {
       setLoading(true);
       setImageLoading(true);
-      setImageUrl("")
+      setImageUrl("");
       const { ok, status, data } = await generateImage(prompt);
 
-      if(!ok){
-        if(status === 401){
-          return
+      if (!ok) {
+        if (status === 401) {
+          return;
         }
-        toast.error(data.message)
-        return
+        toast.error(data.message);
+        return;
       }
+
+      const AiWallpaper: AiType = {
+        id: Date.now().toString(),
+        imageUrl: data.imageUrl,
+        photographer: "Ai generated",
+      };
+
+      console.log(AiWallpaper);
+
+      setAiData(AiWallpaper);
 
       if (status === 429) {
         toast.error("You have reached your free image generator plan");
@@ -63,6 +76,18 @@ export default function Ai() {
       console.log(error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const favourite = async (wallpaper: AiType) => {
+    if (!imageUrl) {
+      return;
+    }
+    const { ok, status, data } = await favouriteAiGenerated(wallpaper);
+    if (ok) {
+      toast.success(data.message);
+    } else {
+      toast.error(data.message);
     }
   };
 
@@ -101,7 +126,10 @@ export default function Ai() {
             "
           />
 
-          <AuthPopup open={showAuthPopup} close={() => setShowAuthPopup(false)} />
+          <AuthPopup
+            open={showAuthPopup}
+            close={() => setShowAuthPopup(false)}
+          />
 
           <div className="flex flex-wrap gap-3 mt-5">
             {[
@@ -189,31 +217,37 @@ export default function Ai() {
 
             <div className="flex gap-4 mt-6">
               <button
-                className="
-                  px-6
-                  py-3
-                  rounded-xl
-                  bg-white/10
-                  border
-                  border-white/10
-                  hover:bg-white/20
-                "
+                onClick={() => favourite(aiData!)}
+                disabled={loading || imageLoading}
+                className={`
+                px-6
+                py-3
+                    rounded-xl
+                 bg-white/10
+                border
+              border-white/10
+              hover:bg-white/20
+                
+                disabled:opacity-50
+                disabled:cursor-not-allowed
+              `}
               >
                 ♡ Favourite
               </button>
 
               <a
-                href={imageUrl}
+                href={loading || imageLoading ? undefined : imageUrl}
                 target="_blank"
-                className="
-                  px-6
-                  py-3
-                  rounded-xl
-                  bg-white/10
-                  border
-                  border-white/10
-                  hover:bg-white/20
-                "
+                onClick={(e) => {
+                  if (loading || imageLoading) {
+                    e.preventDefault();
+                  }
+                }}
+                className={`px-6 py-3 rounded-xl border border-white/10 ${
+                  loading || imageLoading
+                    ? "pointer-events-none opacity-50 cursor-not-allowed"
+                    : "bg-white/10 hover:bg-white/20"
+                }`}
               >
                 Open Image
               </a>

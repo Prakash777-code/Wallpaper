@@ -23,7 +23,7 @@ export default function AuthPopup({ open, close }: AuthPopupProps) {
 
         <p className="mt-3 text-slate-300">
           Register for free to unlock unlimited wallpapers, save your
-          favourites, create stunning AI-generated wallpapers, and enjoy the
+          favourites, create stunning AI-generated wallpapers, download your favourite wallpaper and enjoy the
           full WallVerse experience.
         </p>
 

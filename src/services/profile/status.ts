@@ -1,15 +1,44 @@
-import { startTurbopackTraceServer } from "next/dist/build/swc/generated-native"
+export const getUserStatus = async () => {
+  let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+    credentials: "include",
+  });
 
-export const getUserStatus = async () =>{
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`,{
-        credentials:"include"
-    })
-
-    const data = await res.json()
-
-    return{
-        ok:res.ok,
-        status:res.status,
-        data
+  if (res.status === 401) {
+    const refresh = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
+      {
+        method: "POST",
+        credentials: "include",
+      },
+    );
+    if (refresh.status === 401) {
+      return {
+        ok: false,
+        status: refresh.status,
+        data: {
+          message: "Unauthorized",
+        },
+      };
     }
-}
+    if (!refresh.ok) {
+      const data = await refresh.json();
+      return {
+        ok: refresh.ok,
+        status: refresh.status,
+        data,
+      };
+    }
+
+    let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+      credentials: "include",
+    });
+  }
+
+  const data = await res.json();
+
+  return {
+    ok: res.ok,
+    status: res.status,
+    data,
+  };
+};

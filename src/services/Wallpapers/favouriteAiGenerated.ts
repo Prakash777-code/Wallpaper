@@ -1,6 +1,6 @@
-import { PexelsBackendResponse } from "@/types/pexels";
+import { AiType } from "@/types/favouriteAi";
 
-export const saveToFavourite = async (wallpaper: PexelsBackendResponse) => {
+export const favouriteAiGenerated = async (wallpaper: AiType) => {
   let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/favourites`, {
     method: "POST",
     headers: {
@@ -8,7 +8,7 @@ export const saveToFavourite = async (wallpaper: PexelsBackendResponse) => {
     },
     credentials: "include",
     body: JSON.stringify({
-      wallpaperId: wallpaper.wallpaperId,
+      wallpaperId: wallpaper.id,
       imageUrl: wallpaper.imageUrl,
       photographer: wallpaper.photographer,
     }),
@@ -46,7 +46,7 @@ export const saveToFavourite = async (wallpaper: PexelsBackendResponse) => {
       },
       credentials: "include",
       body: JSON.stringify({
-        wallpaperId: wallpaper.wallpaperId,
+        wallpaperId: wallpaper.id,
         imageUrl: wallpaper.imageUrl,
         photographer: wallpaper.photographer,
       }),
@@ -54,7 +54,6 @@ export const saveToFavourite = async (wallpaper: PexelsBackendResponse) => {
   }
 
   const data = await res.json();
-
   return {
     ok: res.ok,
     status: res.status,

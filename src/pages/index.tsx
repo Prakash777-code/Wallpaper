@@ -9,6 +9,7 @@ import WallpaperCard from "@/components/Cards/WallpaperCard";
 import AuthPopup from "@/components/Ui/AuthPopup";
 import { UserProfile } from "@/types/profile";
 import { checkLoadMore } from "@/services/Wallpapers/loadMore";
+import { getUserStatus } from "@/services/profile/status";
 
 export default function Home() {
   const [wallpaper, setWallpaper] = useState<PexelsBackendResponse[]>([]);
@@ -113,6 +114,15 @@ export default function Home() {
   }, [query, page]);
 
   const handleFavourites = async (wallpaper: PexelsBackendResponse) => {
+    try{
+      const {status} = await getUserStatus()
+      if(status === 401){
+        setShowAuthPopup(true)
+        return
+      }
+    }catch(error){
+      console.log(error)
+    }
     try {
       setFavouriteLoading(true);
       const { ok, status, data } = await saveToFavourite(wallpaper);
@@ -142,7 +152,7 @@ export default function Home() {
 
   const handleLoadMore = async () => {
     try {
-      const { ok, status, data } = await checkLoadMore();
+      const { ok, status } = await checkLoadMore();
       if (!ok) {
         if (status === 401) {
           openAuthPopup();

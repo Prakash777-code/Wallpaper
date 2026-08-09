@@ -1,55 +1,32 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { Menu } from "lucide-react";
+import { useState } from "react";
+import SideDrawer from "./SideDrawer";
 
 export default function Navbar() {
-  const router = useRouter();
-
-  function pushToLogin() {
-    router.push("/login");
-  }
+  const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-900 shadow-2xl">
-      <nav className="mx-auto flex max-w-7xl flex-col items-center gap-4 px-4 py-4 sm:px-6 md:flex-row md:justify-between md:px-8">
-        <Link
-          href="/"
-          className="text-3xl font-extrabold tracking-wide text-white transition duration-300 hover:scale-105"
-        >
-          <span className="bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 bg-clip-text text-transparent">
-            WallVerse
-          </span>
-        </Link>
+    <>
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-900/80 backdrop-blur-xl">
+        <nav className="mx-auto flex h-16 items-center px-5">
+          <button
+            onClick={() => setOpen(true)}
+            className="cursor-pointer rounded-lg p-2 text-white transition hover:bg-white/10"
+          >
+            <Menu size={28} />
+          </button>
 
-        <div className="flex w-full justify-start gap-2 overflow-x-auto rounded-full border border-white/10 bg-white/10 p-2 backdrop-blur-md scrollbar-hide md:absolute md:left-1/2 md:w-auto md:-translate-x-1/2 md:justify-center">
           <Link
             href="/"
-            className="shrink-0 rounded-full px-4 py-2 text-center font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:bg-pink-500 hover:shadow-lg hover:shadow-pink-500/50 md:flex-none md:px-5"
+            className="ml-4 text-2xl font-bold tracking-wide text-cyan-400"
           >
-            🏠 Home
+            WallVerse
           </Link>
+        </nav>
+      </header>
 
-          <Link
-            href="/favourites"
-            className="shrink-0 rounded-full px-4 py-2 text-center font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:bg-red-500 hover:shadow-lg hover:shadow-red-500/50 md:flex-none md:px-5"
-          >
-            ❤️ Favourites
-          </Link>
-
-          <Link
-            href="/ai"
-            className="shrink-0 rounded-full px-4 py-2 text-center font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-500/50 md:flex-none md:px-5"
-          >
-            ✨ AI
-          </Link>
-
-          <Link
-            href="/profile"
-            className="shrink-0 rounded-full px-4 py-2 text-center font-medium text-white transition-all duration-300 hover:-translate-y-1 hover:bg-cyan-500 hover:shadow-lg hover:shadow-cyan-500/50 md:flex-none md:px-5"
-          >
-            👤 Profile
-          </Link>
-        </div>
-      </nav>
-    </header>
+      <SideDrawer open={open} setOpen={setOpen} />
+    </>
   );
 }

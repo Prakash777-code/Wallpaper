@@ -10,7 +10,6 @@ import AuthPopup from "@/components/Ui/AuthPopup";
 import EditNameCard from "@/components/Profile/EditNameCard";
 import UpdatePasswordCard from "@/components/Profile/UpdatePasswordCard";
 import { getUserStatus } from "@/services/profile/status";
-import { PexelsBackendResponse, PexelsPhoto } from "@/types/pexels";
 
 export default function Profile() {
   const [profile, setProfile] = useState<UserProfile>();
@@ -296,31 +295,6 @@ export default function Profile() {
                 Logout
               </button>
             </div>
-          </div>
-        </div>
-
-        <div className="mt-6 rounded-xl border border-purple-500/30 bg-purple-500/10 p-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/20 text-2xl">
-                ⬇️
-              </div>
-
-              <div>
-                <h2 className="text-lg font-semibold text-white">Downloads</h2>
-
-                <p className="text-sm text-zinc-400">
-                  Access your downloaded wallpapers anytime.
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => router.push("/downloads")}
-              className="cursor-pointer text-sm font-medium text-purple-400 transition-all duration-300 hover:-translate-y-0.5 hover:text-purple-300"
-            >
-              View All →
-            </button>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { PexelsBackendResponse } from "@/types/pexels";
 import { downloadWallpaper } from "@/services/Wallpapers/downloadWallpaper";
+import { getUserStatus } from "@/services/profile/status";
 
 type WallpaperCardProps = {
   photo: PexelsBackendResponse;
@@ -10,13 +11,12 @@ type WallpaperCardProps = {
 };
 
 const checkAuthenticated = async (openAuthPopup: () => void) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/status`, {
-    credentials: "include",
-  });
-
-  if (res.status === 401) {
-    openAuthPopup();
-    return false;
+  const { ok, status, data } = await getUserStatus();
+  if (!ok) {
+    if (status === 401) {
+      openAuthPopup();
+      return false;
+    }
   }
 
   return true;
@@ -68,7 +68,7 @@ export default function WallpaperCard({
 
             downloadWallpaper(
               photo.imageUrl,
-               String(photo.wallpaperId),
+              String(photo.wallpaperId),
               photo.photographer,
             );
           }}
