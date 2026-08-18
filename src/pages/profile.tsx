@@ -58,10 +58,12 @@ export default function Profile() {
   };
 
   const fetchProfile = async () => {
-    const { status } = await getUserStatus();
-    if (status === 401) {
-      openAuthPopup();
-      return;
+    const { ok, status } = await getUserStatus();
+    if (!ok) {
+      if (status === 401) {
+        openAuthPopup();
+        return;
+      }
     }
     try {
       setLoading(true);
@@ -168,37 +170,64 @@ export default function Profile() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-black px-6 py-10 text-white">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-8 flex items-center gap-5 rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-indigo-600 text-2xl font-bold">
+    <main className="min-h-screen bg-black text-white">
+      <div className="mx-auto max-w-6xl px-5 py-8 md:px-8 lg:px-10">
+        {/* Profile Header */}
+        <div className="mb-8 flex flex-col gap-5 rounded-3xl border border-zinc-900 bg-zinc-950 p-6 sm:flex-row sm:items-center">
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-2xl font-bold">
             {profile?.name?.charAt(0)?.toUpperCase()}
           </div>
 
           <div>
-            <h1 className="text-3xl font-bold">{profile?.name}</h1>
-            <p className="mt-1 text-gray-400">{profile?.email}</p>
+            <p className="mb-1 text-sm font-medium text-purple-500">
+              Your Profile
+            </p>
+
+            <h1 className="text-3xl font-bold tracking-tight">
+              {profile?.name}
+            </h1>
+
+            <div className="mt-3 inline-flex rounded-full border border-purple-500/20 bg-purple-500/10 px-3 py-1 text-xs font-semibold text-purple-400">
+              {profile?.plan} PLAN
+            </div>
+
+            <p className="mt-1 text-sm text-zinc-500">{profile?.email}</p>
           </div>
         </div>
 
+        
         <div className="grid gap-6 lg:grid-cols-3">
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+         
+          <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6">
             <h2 className="mb-6 text-xl font-semibold">About</h2>
 
-            <div className="space-y-5">
+            <div className="space-y-6">
               <div>
-                <p className="text-sm text-gray-500">Name</p>
-                <p className="mt-1 text-lg">{profile?.name}</p>
+                <p className="text-xs uppercase tracking-widest text-zinc-600">
+                  Name
+                </p>
+
+                <p className="mt-2 text-base font-medium text-zinc-200">
+                  {profile?.name}
+                </p>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">Email</p>
-                <p className="mt-1 text-lg break-all">{profile?.email}</p>
+                <p className="text-xs uppercase tracking-widest text-zinc-600">
+                  Email
+                </p>
+
+                <p className="mt-2 break-all text-base font-medium text-zinc-200">
+                  {profile?.email}
+                </p>
               </div>
 
               <div>
-                <p className="text-sm text-gray-500">Member Since</p>
-                <p className="mt-1 text-lg">
+                <p className="text-xs uppercase tracking-widest text-zinc-600">
+                  Member Since
+                </p>
+
+                <p className="mt-2 text-base font-medium text-zinc-200">
                   {profile &&
                     new Date(profile.memberSince).toLocaleDateString()}
                 </p>
@@ -206,26 +235,27 @@ export default function Profile() {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+         
+          <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6">
             <h2 className="mb-6 text-xl font-semibold">Statistics</h2>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-2xl border border-cyan-500/20 bg-slate-900/60 p-5 text-center">
-                <p className="text-xs uppercase tracking-widest text-gray-400">
+              <div className="rounded-2xl border border-purple-500/20 bg-purple-500/5 p-5 text-center transition hover:border-purple-500/40">
+                <p className="text-xs uppercase tracking-widest text-zinc-500">
                   Favourites
                 </p>
 
-                <h1 className="mt-3 text-4xl font-extrabold text-cyan-400">
+                <h1 className="mt-3 text-4xl font-extrabold text-purple-500">
                   {profile?.totalFavourites}
                 </h1>
               </div>
 
-              <div className="rounded-2xl border border-violet-500/20 bg-slate-900/60 p-5 text-center">
-                <p className="text-xs uppercase tracking-widest text-gray-400">
+              <div className="rounded-2xl border border-pink-500/20 bg-pink-500/5 p-5 text-center transition hover:border-pink-500/40">
+                <p className="text-xs uppercase tracking-widest text-zinc-500">
                   Downloads
                 </p>
 
-                <h1 className="mt-3 text-4xl font-extrabold text-violet-400">
+                <h1 className="mt-3 text-4xl font-extrabold text-pink-500">
                   {profile?.downloads}
                 </h1>
               </div>
@@ -233,18 +263,14 @@ export default function Profile() {
 
             <button
               onClick={() => router.push("/favourites")}
-              className="mt-6 w-full cursor-pointer rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 font-semibold transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:from-cyan-400 hover:to-blue-500 hover:shadow-xl hover:shadow-cyan-500/40 active:scale-95"
+              className="mt-6 w-full cursor-pointer rounded-xl bg-purple-600 py-3 font-semibold transition duration-300 hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-600/20 active:scale-95"
             >
-              ❤️ My Favourites
+              ♡ My Favourites
             </button>
           </div>
 
-          <AuthPopup
-            open={showAuthPopup}
-            close={() => setShowAuthPopup(false)}
-          />
-
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+         
+          <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6">
             <h2 className="mb-6 text-xl font-semibold">Account</h2>
 
             <div className="space-y-4">
@@ -256,19 +282,23 @@ export default function Profile() {
                 onCancel={() => setIsEditingName(false)}
               />
 
-              <button
-                onClick={() => setIsEditingName(true)}
-                className="cursor-pointer w-full rounded-xl border border-purple-500/30 bg-purple-500/10 py-3 font-medium transition-all duration-300 hover:-translate-y-1 hover:border-purple-400 hover:bg-purple-500/20 hover:shadow-lg hover:shadow-purple-500/20 active:scale-95"
-              >
-                Change user name
-              </button>
+              {!isEditingName && (
+                <button
+                  onClick={() => setIsEditingName(true)}
+                  className="w-full cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 py-3 font-medium text-zinc-300 transition duration-300 hover:border-purple-600 hover:bg-purple-600/10 hover:text-white active:scale-95"
+                >
+                  Change User Name
+                </button>
+              )}
 
-              <button
-                onClick={() => setIsUpdatingPassword(true)}
-                className="cursor-pointer w-full rounded-xl border border-purple-500/30 bg-purple-500/10 py-3 font-medium transition-all duration-300 hover:-translate-y-1 hover:border-purple-400 hover:bg-purple-500/20 hover:shadow-lg hover:shadow-purple-500/20 active:scale-95"
-              >
-                Change Password
-              </button>
+              {!isUpdatingPassword && (
+                <button
+                  onClick={() => setIsUpdatingPassword(true)}
+                  className="w-full cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 py-3 font-medium text-zinc-300 transition duration-300 hover:border-purple-600 hover:bg-purple-600/10 hover:text-white active:scale-95"
+                >
+                  Change Password
+                </button>
+              )}
 
               <UpdatePasswordCard
                 open={isUpdatingPassword}
@@ -290,13 +320,15 @@ export default function Profile() {
 
               <button
                 onClick={handleLogout}
-                className="cursor-pointer w-full rounded-xl border border-red-500/30 bg-red-500/10 py-3 font-medium transition-all duration-300 hover:-translate-y-1 hover:border-red-400 hover:bg-red-500/20 hover:shadow-lg hover:shadow-red-500/20 active:scale-95"
+                className="w-full cursor-pointer rounded-xl border border-red-500/20 bg-red-500/5 py-3 font-medium text-red-400 transition duration-300 hover:border-red-500/40 hover:bg-red-500/10 hover:text-red-300 active:scale-95"
               >
                 Logout
               </button>
             </div>
           </div>
         </div>
+
+        <AuthPopup open={showAuthPopup} close={() => setShowAuthPopup(false)} />
       </div>
     </main>
   );

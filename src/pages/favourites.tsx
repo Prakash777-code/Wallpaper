@@ -78,50 +78,60 @@ export default function Favourites() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950">
-      <div className="absolute left-0 top-0 h-80 w-80 rounded-full bg-blue-600/20 blur-[130px]" />
-      <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-violet-600/20 blur-[130px]" />
-
-      <div className="relative mx-auto max-w-7xl px-6 py-12">
-        <div className="mb-10 flex items-center justify-between">
+    <main className="min-h-screen bg-black text-white">
+      <div className="mx-auto max-w-7xl px-5 py-8 md:px-8 lg:px-10">
+        <div className="mb-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
           <div>
-            <h1 className="text-5xl font-bold text-white">
-              Your Favourites ❤️
+            <p className="mb-2 text-sm font-medium text-purple-500">
+              Your Collection
+            </p>
+
+            <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
+              Your <span className="text-purple-500">Favourites</span>
             </h1>
 
-            <p className="mt-2 text-slate-400">
+            <p className="mt-2 text-zinc-500">
               {favourites.length} saved wallpapers
             </p>
           </div>
+
+          <button
+            onClick={() => router.push("/")}
+            className="w-fit rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-3 text-sm font-medium text-zinc-300 transition hover:border-purple-600 hover:bg-purple-600 hover:text-white"
+          >
+            Explore Wallpapers
+          </button>
         </div>
 
         <AuthPopup open={showAuthPopup} close={() => setShowAuthPopup(false)} />
 
         {loading ? (
-          <div className="flex h-[60vh] items-center justify-center">
-            <div className="h-16 w-16 animate-spin rounded-full border-4 border-white/20 border-t-blue-500" />
+          <div className="flex min-h-[60vh] items-center justify-center">
+            <div className="h-12 w-12 animate-spin rounded-full border-2 border-zinc-800 border-t-purple-500" />
           </div>
         ) : favourites.length === 0 ? (
-          <div className="flex h-[60vh] flex-col items-center justify-center">
-            <div className="text-7xl">💔</div>
+          <div className="flex min-h-[55vh] flex-col items-center justify-center text-center">
+            <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-950">
+              <span className="text-4xl text-zinc-600">♡</span>
+            </div>
 
-            <h2 className="mt-6 text-3xl font-bold text-white">
+            <h2 className="text-2xl font-bold md:text-3xl">
               No favourites yet
             </h2>
 
-            <p className="mt-2 text-slate-400">
-              Save wallpapers and they'll appear here.
+            <p className="mt-2 max-w-md text-zinc-500">
+              Save wallpapers you love and they will appear here.
             </p>
 
             <button
               onClick={() => router.push("/")}
-              className=" cursor-pointer mt-8 rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 px-8 py-3 font-semibold text-white transition hover:scale-105"
+              className="cursor-pointer mt-7 rounded-xl bg-purple-600 px-7 py-3 font-semibold text-white transition hover:bg-purple-500"
             >
               Explore Wallpapers
             </button>
           </div>
         ) : (
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {favourites.map((wallpaper) => (
               <FavouriteWallpaperCard
                 key={wallpaper.id}

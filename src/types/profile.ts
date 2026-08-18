@@ -4,4 +4,5 @@ export interface UserProfile{
     memberSince:string;
     totalFavourites:number;
     downloads:number
+    plan:string
 }

@@ -28,8 +28,8 @@ export default function Login() {
       if (ok) {
         router.replace("/");
       } else {
-        toast.error("Invalid email or password")
-        return
+        toast.error("Invalid email or password");
+        return;
       }
     } catch (error) {
       console.log(error);
@@ -39,24 +39,30 @@ export default function Login() {
   };
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 px-4">
-      <div className="absolute left-20 top-20 h-72 w-72 rounded-full bg-blue-600/30 blur-[120px]" />
-      <div className="absolute bottom-20 right-20 h-72 w-72 rounded-full bg-purple-600/30 blur-[120px]" />
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-4">
+      <div className="absolute left-10 top-20 h-72 w-72 rounded-full bg-purple-600/10 blur-[140px]" />
+      <div className="absolute bottom-10 right-10 h-72 w-72 rounded-full bg-pink-600/10 blur-[140px]" />
 
-      <div className="relative w-full max-w-md rounded-3xl border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur-xl">
+      <div className="relative w-full max-w-md rounded-3xl border border-zinc-900 bg-zinc-950 p-8 shadow-2xl">
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-white">Welcome Back 👋</h1>
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 text-2xl font-bold shadow-lg shadow-purple-600/20">
+            W
+          </div>
 
-          <p className="mt-2 text-slate-300">
+          <h1 className="text-3xl font-bold tracking-tight text-white">
+            Welcome Back
+          </h1>
+
+          <p className="mt-2 text-sm text-zinc-500">
             Login to continue exploring wallpapers
           </p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-6">
+        <form onSubmit={handleLogin} className="space-y-5">
           <div>
             <label
               htmlFor="email"
-              className="mb-2 block text-sm font-medium text-slate-200"
+              className="mb-2 block text-sm font-medium text-zinc-300"
             >
               Email
             </label>
@@ -68,14 +74,14 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="wallverse@gmail.com"
               required
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:bg-white/10"
+              className="w-full rounded-xl border border-zinc-800 bg-zinc-900/70 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-purple-600 focus:bg-zinc-900"
             />
           </div>
 
           <div>
             <label
               htmlFor="password"
-              className="mb-2 block text-sm font-medium text-slate-200"
+              className="mb-2 block text-sm font-medium text-zinc-300"
             >
               Password
             </label>
@@ -85,33 +91,37 @@ export default function Login() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="wallverse"
+              placeholder="••••••••"
               required
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-400 outline-none transition focus:border-blue-500 focus:bg-white/10"
+              className="w-full rounded-xl border border-zinc-800 bg-zinc-900/70 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-purple-600 focus:bg-zinc-900"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-violet-600 py-3 font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-blue-500/40 disabled:opacity-60 cursor-pointer"
+            className="w-full cursor-pointer rounded-xl bg-purple-600 py-3 font-semibold text-white transition duration-300 hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-600/25 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Logging in..." : "Sign In"}
           </button>
         </form>
 
         <div className="my-6 flex items-center">
-          <div className="h-px flex-1 bg-white/10" />
-          <span className="px-3 text-sm text-slate-400">or</span>
-          <div className="h-px flex-1 bg-white/10" />
+          <div className="h-px flex-1 bg-zinc-900" />
+
+          <span className="px-3 text-xs uppercase tracking-widest text-zinc-600">
+            or
+          </span>
+
+          <div className="h-px flex-1 bg-zinc-900" />
         </div>
 
-        <p className="text-center text-sm text-slate-300">
+        <p className="text-center text-sm text-zinc-500">
           Don't have an account?{" "}
           <button
             type="button"
             onClick={() => router.push("/register")}
-            className="cursor-pointer font-semibold text-blue-400 transition hover:text-blue-300"
+            className="cursor-pointer font-semibold text-purple-500 transition hover:text-purple-400"
           >
             Create one
           </button>

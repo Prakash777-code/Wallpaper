@@ -11,12 +11,15 @@ type WallpaperCardProps = {
 };
 
 const checkAuthenticated = async (openAuthPopup: () => void) => {
-  const { ok, status, data } = await getUserStatus();
+  const { ok, status } = await getUserStatus();
+
+  if (status === 401) {
+    openAuthPopup();
+    return false;
+  }
+
   if (!ok) {
-    if (status === 401) {
-      openAuthPopup();
-      return false;
-    }
+    return false;
   }
 
   return true;

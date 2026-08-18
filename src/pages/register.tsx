@@ -47,19 +47,21 @@ export default function Register() {
   };
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 px-4">
-      <div className="absolute -left-20 top-0 h-80 w-80 rounded-full bg-blue-600/30 blur-[130px]" />
-      <div className="absolute right-0 bottom-0 h-80 w-80 rounded-full bg-violet-600/30 blur-[130px]" />
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-4">
+      <div className="absolute -left-20 top-0 h-80 w-80 rounded-full bg-purple-600/10 blur-[140px]" />
+      <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-pink-600/10 blur-[140px]" />
 
-      <div className="relative w-full max-w-md rounded-3xl border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur-xl">
+      <div className="relative w-full max-w-md rounded-3xl border border-zinc-900 bg-zinc-950 p-8 shadow-2xl">
         <div className="mb-8 text-center">
-          <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-violet-600 text-3xl shadow-lg shadow-blue-500/30">
-            🚀
+          <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 text-2xl font-bold shadow-lg shadow-purple-600/20">
+            W
           </div>
 
-          <h1 className="text-4xl font-bold text-white">Create Account</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-white">
+            Create Account
+          </h1>
 
-          <p className="mt-2 text-slate-300">
+          <p className="mt-2 text-sm text-zinc-500">
             Join us and start exploring a universe of wallpapers
           </p>
         </div>
@@ -68,7 +70,7 @@ export default function Register() {
           <div>
             <label
               htmlFor="name"
-              className="mb-2 block text-sm font-medium text-slate-200"
+              className="mb-2 block text-sm font-medium text-zinc-300"
             >
               Full Name
             </label>
@@ -80,14 +82,14 @@ export default function Register() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-400 outline-none transition-all duration-300 focus:border-blue-500 focus:bg-white/10"
+              className="w-full rounded-xl border border-zinc-800 bg-zinc-900/70 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-purple-600 focus:bg-zinc-900"
             />
           </div>
 
           <div>
             <label
               htmlFor="email"
-              className="mb-2 block text-sm font-medium text-slate-200"
+              className="mb-2 block text-sm font-medium text-zinc-300"
             >
               Email
             </label>
@@ -99,14 +101,14 @@ export default function Register() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-400 outline-none transition-all duration-300 focus:border-blue-500 focus:bg-white/10"
+              className="w-full rounded-xl border border-zinc-800 bg-zinc-900/70 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-purple-600 focus:bg-zinc-900"
             />
           </div>
 
           <div>
             <label
               htmlFor="password"
-              className="mb-2 block text-sm font-medium text-slate-200"
+              className="mb-2 block text-sm font-medium text-zinc-300"
             >
               Password
             </label>
@@ -114,35 +116,39 @@ export default function Register() {
             <input
               id="password"
               type="password"
-              placeholder="wallverse123"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-400 outline-none transition-all duration-300 focus:border-blue-500 focus:bg-white/10"
+              className="w-full rounded-xl border border-zinc-800 bg-zinc-900/70 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-purple-600 focus:bg-zinc-900"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 py-3 font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/40 active:scale-[0.98] disabled:opacity-60"
+            className="w-full cursor-pointer rounded-xl bg-purple-600 py-3 font-semibold text-white transition duration-300 hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-600/25 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
         <div className="my-6 flex items-center">
-          <div className="h-px flex-1 bg-white/10" />
-          <span className="px-3 text-sm text-slate-400">or</span>
-          <div className="h-px flex-1 bg-white/10" />
+          <div className="h-px flex-1 bg-zinc-900" />
+
+          <span className="px-3 text-xs uppercase tracking-widest text-zinc-600">
+            or
+          </span>
+
+          <div className="h-px flex-1 bg-zinc-900" />
         </div>
 
-        <p className="text-center text-sm text-slate-300">
+        <p className="text-center text-sm text-zinc-500">
           Already have an account?{" "}
           <button
             type="button"
             onClick={() => router.push("/login")}
-            className="cursor-pointer font-semibold text-blue-400 transition hover:text-blue-300"
+            className="cursor-pointer font-semibold text-purple-500 transition hover:text-purple-400"
           >
             Sign In
           </button>

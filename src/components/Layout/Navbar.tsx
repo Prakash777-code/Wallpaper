@@ -8,25 +8,31 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-900/80 backdrop-blur-xl">
-        <nav className="mx-auto flex h-16 items-center px-5">
+      <header className="sticky top-0 z-40 border-b border-zinc-900 bg-black/90 backdrop-blur-xl">
+        <nav className="flex h-16 items-center px-4">
+
           <button
+            type="button"
             onClick={() => setOpen(true)}
-            className="cursor-pointer rounded-lg p-2 text-white transition hover:bg-white/10"
+            className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl text-zinc-300 hover:bg-zinc-900 hover:text-white"
           >
-            <Menu size={28} />
+            <Menu size={26} />
           </button>
 
           <Link
             href="/"
-            className="ml-4 text-2xl font-bold tracking-wide text-cyan-400"
+            className="ml-3 text-xl font-bold text-white"
           >
-            WallVerse
+            Wall<span className="text-purple-500">Verse</span>
           </Link>
+
         </nav>
       </header>
 
-      <SideDrawer open={open} setOpen={setOpen} />
+      <SideDrawer
+        open={open}
+        setOpen={setOpen}
+      />
     </>
   );
 }

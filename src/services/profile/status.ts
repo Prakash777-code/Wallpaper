@@ -11,25 +11,28 @@ export const getUserStatus = async () => {
         credentials: "include",
       },
     );
+
     if (refresh.status === 401) {
       return {
         ok: false,
-        status: refresh.status,
+        status: 401,
         data: {
           message: "Unauthorized",
         },
       };
     }
+
     if (!refresh.ok) {
       const data = await refresh.json();
+
       return {
-        ok: refresh.ok,
+        ok: false,
         status: refresh.status,
         data,
       };
     }
 
-    let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
+    res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user`, {
       credentials: "include",
     });
   }
