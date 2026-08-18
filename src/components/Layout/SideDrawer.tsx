@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Download, Heart, Home, Sparkles, User, X, Crown } from "lucide-react";
 import { getUserStatus } from "@/services/profile/status";
+import toast from "react-hot-toast";
 
 interface SideDrawerProps {
   open: boolean;
@@ -21,6 +22,16 @@ export default function SideDrawer({ open, setOpen }: SideDrawerProps) {
     setOpen(false);
   };
 
+  const showComingSoonToast = () => {
+    toast("Coming soon 🚀", {
+      style: {
+        background: "#09090b",
+        color: "#fff",
+        border: "1px solid #27272a",
+      },
+    });
+  };
+
   useEffect(() => {
     const checkAuthenticated = async () => {
       try {
@@ -28,7 +39,7 @@ export default function SideDrawer({ open, setOpen }: SideDrawerProps) {
 
         if (!ok && status === 401) {
           setNotAuthenticated(true);
-          setShowLoginButton(true)
+          setShowLoginButton(true);
           setAuthChecked(true);
           return;
         }
@@ -335,7 +346,7 @@ export default function SideDrawer({ open, setOpen }: SideDrawerProps) {
 
                 <button
                   type="button"
-                  onClick={() => setShowUpgrade(false)}
+                  onClick={() => showComingSoonToast}
                   className="mt-7 w-full cursor-pointer rounded-xl bg-purple-600 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-600/30 active:scale-95"
                 >
                   Upgrade to Pro
@@ -386,7 +397,7 @@ export default function SideDrawer({ open, setOpen }: SideDrawerProps) {
 
                 <button
                   type="button"
-                  onClick={() => setShowUpgrade(false)}
+                  onClick={() => showComingSoonToast}
                   className="mt-7 w-full cursor-pointer rounded-xl border border-pink-500/40 bg-pink-500/10 py-3 text-sm font-semibold text-pink-400 transition-all duration-300 hover:bg-pink-500 hover:text-white hover:shadow-lg hover:shadow-pink-500/20 active:scale-95"
                 >
                   Upgrade to Premium

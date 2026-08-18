@@ -20,6 +20,16 @@ export default function Ai() {
     setShowAuthPopup(true);
   };
 
+  const showComingSoonToast = () => {
+    toast("Coming soon 🚀", {
+      style: {
+        background: "#09090b",
+        color: "#fff",
+        border: "1px solid #27272a",
+      },
+    });
+  };
+
   useEffect(() => {
     userStatus();
   }, []);
@@ -274,7 +284,7 @@ export default function Ai() {
 
                     <button
                       type="button"
-                      onClick={() => setShowUpgrade(false)}
+                      onClick={() => showComingSoonToast}
                       className="mt-7 w-full cursor-pointer rounded-xl bg-purple-600 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-600/30 active:scale-95"
                     >
                       Upgrade to Pro
@@ -331,7 +341,7 @@ export default function Ai() {
 
                     <button
                       type="button"
-                      onClick={() => setShowUpgrade(false)}
+                      onClick={() => showComingSoonToast}
                       className="mt-7 w-full cursor-pointer rounded-xl border border-pink-500/40 bg-pink-500/10 py-3 text-sm font-semibold text-pink-400 transition-all duration-300 hover:bg-pink-500 hover:text-white hover:shadow-lg hover:shadow-pink-500/20 active:scale-95"
                     >
                       Upgrade to Premium
