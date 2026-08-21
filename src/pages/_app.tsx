@@ -6,11 +6,21 @@ import { useRouter } from "next/router";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const hidNavbar = router.pathname === "/login" || router.pathname === "/register";
+  const hidNavbar =
+    router.pathname === "/login" || router.pathname === "/register";
   return (
     <>
-      {!hidNavbar && <Navbar/>}
-      <Toaster position="top-center" />
+      {!hidNavbar && <Navbar />}
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          style: {
+            background: "#09090b",
+            color: "#fff",
+            border: "1px solid #27272a",
+          },
+        }}
+      />
       <Component {...pageProps} />
     </>
   );

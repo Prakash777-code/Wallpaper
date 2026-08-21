@@ -125,13 +125,13 @@ export default function Favourites() {
 
             <button
               onClick={() => router.push("/")}
-              className="cursor-pointer mt-7 rounded-xl bg-purple-600 px-7 py-3 font-semibold text-white transition hover:bg-purple-500"
+              className="cursor-pointer mt-7 rounded-xl bg-purple-600 px-7 py-3 font-semibold  "
             >
               Explore Wallpapers
             </button>
           </div>
         ) : (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+         <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
             {favourites.map((wallpaper) => (
               <FavouriteWallpaperCard
                 key={wallpaper.id}

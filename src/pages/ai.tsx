@@ -6,6 +6,7 @@ import { AiType } from "@/types/favouriteAi";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Crown } from "lucide-react";
+import { downloadWallpaper } from "@/services/Wallpapers/downloadWallpaper";
 
 export default function Ai() {
   const [prompt, setPrompt] = useState("");
@@ -60,7 +61,7 @@ export default function Ai() {
             "You have reached your daily plan limit upgrade to pro or premium for more image generation",
           );
           setShowUpgrade(true);
-          setImageLoading(false)
+          setImageLoading(false);
           return;
         }
       }
@@ -168,7 +169,7 @@ export default function Ai() {
 
                 <div className="mb-8 text-center">
                   <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-500/10 text-purple-400">
-                  <Crown size={25} />
+                    <Crown size={25} />
                   </div>
 
                   <h2 className="text-3xl font-bold text-white md:text-4xl">
@@ -284,7 +285,10 @@ export default function Ai() {
 
                     <button
                       type="button"
-                       onClick={showComingSoonToast}
+                      onClick={()=>{
+                        showComingSoonToast
+                        setShowUpgrade(false)
+                      }}
                       className="mt-7 w-full cursor-pointer rounded-xl bg-purple-600 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-purple-500 hover:shadow-lg hover:shadow-purple-600/30 active:scale-95"
                     >
                       Upgrade to Pro
@@ -341,7 +345,10 @@ export default function Ai() {
 
                     <button
                       type="button"
-                      onClick={showComingSoonToast}
+                      onClick={()=>{
+                        showComingSoonToast
+                        setShowUpgrade(false)
+                      }}
                       className="mt-7 w-full cursor-pointer rounded-xl border border-pink-500/40 bg-pink-500/10 py-3 text-sm font-semibold text-pink-400 transition-all duration-300 hover:bg-pink-500 hover:text-white hover:shadow-lg hover:shadow-pink-500/20 active:scale-95"
                     >
                       Upgrade to Premium

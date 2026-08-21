@@ -27,11 +27,14 @@ export default function Upload() {
     try {
       setLoader(true);
 
-      let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/pexels/upload`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
+      let res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/pexels/upload`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        },
+      );
 
       console.log("API STATUS:", res.status);
 
@@ -63,6 +66,22 @@ export default function Upload() {
       }
 
       const data = await res.json();
+
+      if (res.status === 409) {
+        toast.error(data.message);
+        return;
+      }
+
+      if (res.ok) {
+        toast.success("Wallpaper uploaded");
+      }
+
+      if (!res.ok) {
+        toast.error(data.message || "Upload failed");
+        return;
+      }
+
+      console.log("RESPONSE:", data);
 
       console.log("RESPONSE:", data);
     } catch (error) {
@@ -115,12 +134,12 @@ export default function Upload() {
                   <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-zinc-800 text-2xl">
                     ↑
                   </div>
-
                   <p className="text-base font-medium text-zinc-200">
                     Click to upload wallpaper
                   </p>
-
-                  <p className="mt-2 text-sm text-zinc-500">PNG, JPG or WEBP</p>
+                  <p className="mt-2 text-sm text-zinc-500">
+                    PNG, JPG or WEBP • Max size: 6 MB
+                  </p>{" "}
                 </div>
               )}
 
@@ -128,7 +147,16 @@ export default function Upload() {
                 type="file"
                 onChange={(e) => {
                   if (e.target.files && e.target.files[0]) {
-                    setImage(e.target.files[0]);
+                    const selectedFile = e.target.files[0];
+                    const maxSize = 6 * 1024 * 1024;
+
+                    if (selectedFile.size >= maxSize) {
+                      toast.error("File must be less than 6 MB");
+                      e.target.value = "";
+                      return;
+                    }
+
+                    setImage(selectedFile);
                   }
                 }}
                 accept="image/png,image/jpeg,image/webp"
@@ -146,7 +174,7 @@ export default function Upload() {
           <button
             type="button"
             onClick={uploadWallpaper}
-            className="mt-6 w-full cursor-pointer rounded-xl bg-white px-5 py-3 font-semibold text-black"
+            className="mt-6 w-full cursor-pointer rounded-xl bg-purple-600 px-5 py-3 font-semibold text-white transition hover:bg-purple-500 active:scale-[0.98]"
           >
             Upload Wallpaper
           </button>

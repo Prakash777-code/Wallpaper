@@ -10,6 +10,8 @@ import AuthPopup from "@/components/Ui/AuthPopup";
 import { UserProfile } from "@/types/profile";
 import { checkLoadMore } from "@/services/Wallpapers/loadMore";
 import { getUserStatus } from "@/services/profile/status";
+import { fetchCommunityWallpapers } from "@/services/Wallpapers/coomunityWallpapers";
+import { CommunityResponse } from "@/types/community";
 
 export default function Home() {
   const [wallpaper, setWallpaper] = useState<PexelsBackendResponse[]>([]);
@@ -22,6 +24,12 @@ export default function Home() {
   const [profile, setProfile] = useState<UserProfile>();
   const [isVisible, setIsVisible] = useState(false);
   const [upgradePopup, setUpgradePopup] = useState(false);
+  const [communityWallpapers, setCommunityWallpapers] = useState<
+    CommunityResponse[]
+  >([]);
+  const [wallpaperSource, setWallpaperSource] = useState<
+    "pexels" | "wallverse"
+  >("pexels");
 
   const router = useRouter();
 
@@ -126,7 +134,13 @@ export default function Home() {
       }
 
       if (status === 429) {
-        toast.error("Too many requests. Please try again later");
+        toast("Wallpaper is already in your favourites", {
+          style: {
+            background: "#09090b",
+            color: "#fff",
+            border: "1px solid #27272a",
+          },
+        });
         return;
       }
 
@@ -163,6 +177,20 @@ export default function Home() {
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const getCommunityWallpapers = async () => {
+    try {
+      setLoading(true);
+      const { ok, status, data } = await fetchCommunityWallpapers();
+      if (ok) {
+        setCommunityWallpapers(data.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -214,6 +242,7 @@ export default function Home() {
               <select
                 value={query}
                 onChange={(e) => {
+                  setWallpaperSource("pexels");
                   setQuery(e.target.value);
                   setPage(1);
                 }}
@@ -228,20 +257,24 @@ export default function Home() {
             <div className="mb-8 flex gap-3 overflow-x-auto pb-2">
               <button
                 onClick={() => {
-                  setQuery("cars");
-                  setPage(1);
+                  setWallpaperSource("wallverse");
+                  getCommunityWallpapers();
                 }}
-                className={`shrink-0 cursor-pointer rounded-full px-6 py-2.5 text-sm font-medium transition ${
-                  query === "cars"
+                className={`relative shrink-0 cursor-pointer rounded-full px-6 py-2.5 text-sm font-medium transition ${
+                  wallpaperSource === "wallverse"
                     ? "bg-purple-600 text-white shadow-lg shadow-purple-600/20"
                     : "bg-zinc-900 text-zinc-400 hover:bg-zinc-800 hover:text-white"
                 }`}
               >
-                All
+                Wallverse
+                <span className="ml-1.5 rounded-full bg-red-500 px-1.5 py-0.5 align-middle text-[8px] font-extrabold tracking-wider text-white shadow-sm shadow-red-500/30">
+                  NEW
+                </span>
               </button>
 
               <button
                 onClick={() => {
+                  setWallpaperSource("pexels");
                   setQuery("nature");
                   setPage(1);
                 }}
@@ -256,6 +289,7 @@ export default function Home() {
 
               <button
                 onClick={() => {
+                  setWallpaperSource("pexels");
                   setQuery("cars");
                   setPage(1);
                 }}
@@ -270,6 +304,7 @@ export default function Home() {
 
               <button
                 onClick={() => {
+                  setWallpaperSource("pexels");
                   setQuery("anime");
                   setPage(1);
                 }}
@@ -284,6 +319,7 @@ export default function Home() {
 
               <button
                 onClick={() => {
+                  setWallpaperSource("pexels");
                   setQuery("minimal");
                   setPage(1);
                 }}
@@ -298,6 +334,7 @@ export default function Home() {
 
               <button
                 onClick={() => {
+                  setWallpaperSource("pexels");
                   setQuery("space");
                   setPage(1);
                 }}
@@ -312,6 +349,7 @@ export default function Home() {
 
               <button
                 onClick={() => {
+                  setWallpaperSource("pexels");
                   setQuery("city");
                   setPage(1);
                 }}
@@ -326,6 +364,7 @@ export default function Home() {
 
               <button
                 onClick={() => {
+                  setWallpaperSource("pexels");
                   setQuery("abstract");
                   setPage(1);
                 }}
@@ -348,12 +387,28 @@ export default function Home() {
             )}
 
             <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3 xl:grid-cols-4">
-              {" "}
-              {Array.isArray(wallpaper) &&
+              {wallpaperSource === "pexels" &&
+                Array.isArray(wallpaper) &&
                 wallpaper.map((photo) => (
                   <WallpaperCard
                     key={photo.wallpaperId}
                     photo={photo}
+                    favouriteLoading={favouriteLoading}
+                    handleFavourites={handleFavourites}
+                    openAuthPopup={() => setShowAuthPopup(true)}
+                  />
+                ))}
+
+              {wallpaperSource === "wallverse" &&
+                Array.isArray(communityWallpapers) &&
+                communityWallpapers.map((photo) => (
+                  <WallpaperCard
+                    key={photo.id}
+                    photo={{
+                      wallpaperId: photo.id,
+                      imageUrl: photo.imageUrl,
+                      photographer: photo.userName,
+                    }}
                     favouriteLoading={favouriteLoading}
                     handleFavourites={handleFavourites}
                     openAuthPopup={() => setShowAuthPopup(true)}

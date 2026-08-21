@@ -33,7 +33,7 @@ export default function WallpaperCard({
 }: WallpaperCardProps) {
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-xl transition-all duration-500 hover:-translate-y-3 hover:shadow-cyan-500/20">
-      <div className="relative aspect-[3/4] overflow-hidden sm:aspect-[2/3]">
+      <div className="relative h-[260px] overflow-hidden rounded-xl sm:h-[340px] lg:h-[400px]">
         {" "}
         <div
           onClick={() => window.open(photo.imageUrl, "_blank")}
@@ -73,7 +73,7 @@ export default function WallpaperCard({
               photo.photographer,
             );
           }}
-          className="absolute bottom-4 right-4 z-20 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-lg transition hover:scale-110 hover:bg-cyan-500"
+          className="absolute bottom-4 right-4 z-20 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-lg transition hover:scale-110  hover:bg-purple-600"
         >
           ↓
         </button>
