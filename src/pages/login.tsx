@@ -22,7 +22,7 @@ export default function Login() {
       setLoading(true);
       const { ok, status, data } = await handleUserLogin(email, password);
       if (status === 429) {
-        toast.error(data.message);
+        toast.error("Too many request, try again later");
         return;
       }
       if (ok) {

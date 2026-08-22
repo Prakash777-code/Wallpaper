@@ -1,4 +1,6 @@
-import { useState } from "react";
+import AuthPopup from "@/components/Ui/AuthPopup";
+import { getUserStatus } from "@/services/profile/status";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function Upload() {
@@ -7,6 +9,23 @@ export default function Upload() {
   const [imageTitle, setImageTitle] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [loader, setLoader] = useState(false);
+  const [showAuthPopup, setShowAuthPopup] = useState(false);
+
+  useEffect(() => {
+    getStatus();
+  });
+
+  const getStatus = async () => {
+    const { status } = await getUserStatus();
+    if (status === 401) {
+      openAuthPopup();
+      return;
+    }
+  };
+
+  const openAuthPopup = () => {
+    setShowAuthPopup(true);
+  };
 
   const uploadWallpaper = async () => {
     console.log("UPLOAD BUTTON CLICKED");
@@ -180,6 +199,7 @@ export default function Upload() {
           </button>
         </div>
       </div>
+      <AuthPopup open={showAuthPopup} close={() => setShowAuthPopup(false)} />
     </div>
   );
 }

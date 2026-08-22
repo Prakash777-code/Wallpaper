@@ -124,6 +124,15 @@ export default function Home() {
 
   const handleFavourites = async (wallpaper: PexelsBackendResponse) => {
     try {
+      const { ok, status } = await getUserStatus();
+      if (!ok && status === 401) {
+        openAuthPopup();
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    try {
       setFavouriteLoading(true);
 
       const { ok, status, data } = await saveToFavourite(wallpaper);
@@ -134,7 +143,7 @@ export default function Home() {
       }
 
       if (status === 429) {
-        toast("Wallpaper is already in your favourites", {
+        toast("Too many requets, try again later", {
           style: {
             background: "#09090b",
             color: "#fff",

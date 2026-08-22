@@ -17,6 +17,18 @@ export default function Favourites() {
   const router = useRouter();
 
   useEffect(() => {
+    userState()
+  })
+
+   const userState = async () => {
+    const {ok, status } = await getUserStatus();
+    if (!ok && status === 401) {
+      openAuthPopup();
+      return;
+    }
+  }
+
+  useEffect(() => {
     fetchFavourites();
   }, []);
 
@@ -25,11 +37,6 @@ export default function Favourites() {
   };
 
   const fetchFavourites = async () => {
-    const { status } = await getUserStatus();
-    if (status === 401) {
-      openAuthPopup();
-      return;
-    }
     try {
       setLoading(true);
 

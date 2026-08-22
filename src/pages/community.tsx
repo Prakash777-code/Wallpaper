@@ -1,4 +1,6 @@
 import WallpaperCard from "@/components/Cards/WallpaperCard";
+import AuthPopup from "@/components/Ui/AuthPopup";
+import { getUserStatus } from "@/services/profile/status";
 import { fetchCommunityWallpapers } from "@/services/Wallpapers/coomunityWallpapers";
 import { saveToFavourite } from "@/services/Wallpapers/saveFavourites";
 import { CommunityResponse } from "@/types/community";
@@ -12,6 +14,19 @@ export default function Community() {
   >([]);
   const [loader, setLoader] = useState(false);
   const [favouriteLoader, setFavouriteLoader] = useState(false);
+  const [showAuthPopup, setShowAuthPopup] = useState(false);
+
+  useEffect(() =>{
+    getStatus()
+  })
+
+  const getStatus = async () => {
+    const { status } = await getUserStatus();
+    if (status === 401) {
+      openAuthPopup();
+      return;
+    }
+  };
 
   useEffect(() => {
     getCommunityWallpapers();
@@ -32,18 +47,22 @@ export default function Community() {
     }
   };
 
+  const openAuthPopup = () => {
+    setShowAuthPopup(true);
+  };
+
   const handleFavourite = async (wallpaper: PexelsBackendResponse) => {
     try {
       setFavouriteLoader(true);
       const { ok, status, data } = await saveToFavourite(wallpaper);
 
-      if(ok){
-        toast.success(data.message)
+      if (ok) {
+        toast.success(data.message);
       }
 
-      if(status === 409){
-        toast.error(data.message)
-        return 
+      if (status === 409) {
+        toast.error(data.message);
+        return;
       }
     } catch (error) {
       console.log(error);
@@ -109,6 +128,8 @@ export default function Community() {
           </div>
         )}
       </div>
+
+      <AuthPopup open={showAuthPopup} close={() => setShowAuthPopup(false)} />
     </div>
   );
 }

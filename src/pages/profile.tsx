@@ -13,8 +13,9 @@ import { getUserStatus } from "@/services/profile/status";
 import { CommunityResponse } from "@/types/community";
 import { UserUploadedResponse } from "@/types/userUploaded";
 import { fetchUserUploadedWallpaper } from "@/services/Wallpapers/userUploadedWallpapers";
-import { Download, Heart, Upload } from "lucide-react";
+import { Download, Heart, Trash2, Upload } from "lucide-react";
 import { getUserPrompts } from "@/services/profile/userPrompts";
+import { deletePost } from "@/services/Wallpapers/removeUploads";
 
 export default function Profile() {
   const [profile, setProfile] = useState<UserProfile>();
@@ -34,8 +35,20 @@ export default function Profile() {
   const [showPrompts, setShowPrompts] = useState(false);
   const [copiedPrompt, setCopiedPrompt] = useState<number | null>(null);
   const [prompts, setPrompts] = useState<{ prompt: string }[]>([]);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [deleteLoader, setDeleteLoader] = useState(false);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
   const router = useRouter();
 
+  useEffect(() => {
+    getStatus();
+  });
+  const getStatus = async () => {
+    const { status } = await getUserStatus();
+    if (status === 401) {
+      openAuthPopup();
+    }
+  };
   useEffect(() => {
     fetchProfile();
   }, []);
@@ -54,14 +67,6 @@ export default function Profile() {
 
   const openAuthPopup = () => {
     setShowAuthPopup(true);
-  };
-
-  const getUsertStatus = async () => {
-    const { status } = await getUserStatus();
-    if (status === 401) {
-      openAuthPopup();
-      return;
-    }
   };
 
   const handleLogout = async () => {
@@ -113,44 +118,6 @@ export default function Profile() {
       console.log(error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleEditName = async (newName: string) => {
-    try {
-      if (!newName) {
-        toast.error("New name is required");
-        return;
-      }
-      if (profile?.name.toLowerCase() === newName.toLowerCase()) {
-        toast.error("Enter a different name");
-        return;
-      }
-      setEditLoader(true);
-      const { ok, status, data } = await editUserName(newName);
-
-      if (status === 429) {
-        toast.error(data.message);
-        return;
-      }
-
-      if (!ok) {
-        if (status === 401) {
-          router.replace("/login");
-          return;
-        }
-        toast.error(data.message);
-        return;
-      }
-
-      toast.success(data.message);
-      setIsEditingName(false);
-      fetchProfile();
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to change name");
-    } finally {
-      setEditLoader(false);
     }
   };
 
@@ -213,6 +180,32 @@ export default function Profile() {
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const deleteUserUpload = async (id: number) => {
+    try {
+      setDeleteLoader(true);
+
+      const { ok, data } = await deletePost(id);
+
+      if (ok) {
+        toast.success(data.message);
+
+        setUploadedWallpapers((previous) =>
+          previous.filter((wallpaper) => wallpaper.id !== id),
+        );
+
+        setShowDeletePopup(false);
+        setDeleteId(null);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to delete wallpaper");
+    } finally {
+      setDeleteLoader(false);
     }
   };
 
@@ -419,74 +412,74 @@ export default function Profile() {
         </section>
 
         <section className="mt-8 mb-10 rounded-3xl border border-zinc-900 bg-zinc-950 p-6 md:p-7">
-  <div className="flex items-center justify-between gap-4">
-    <div>
-      <h2 className="text-xl font-semibold">AI Generation Prompts</h2>
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-semibold">AI Generation Prompts</h2>
 
-      <p className="mt-1 text-sm text-zinc-500">
-        Prompts you have used to generate AI wallpapers
-      </p>
-    </div>
-
-    <button
-      type="button"
-      onClick={() => setShowPrompts(!showPrompts)}
-      className="cursor-pointer rounded-xl bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-500"
-    >
-      {showPrompts ? "Hide Prompts" : "View Prompts"}
-    </button>
-  </div>
-
-  {showPrompts && (
-    <div className="mt-6 space-y-3">
-      {prompts.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/30 p-6 text-center">
-          <p className="text-sm text-zinc-500">
-            You haven't generated any AI wallpapers yet.
-          </p>
-        </div>
-      ) : (
-        prompts.map((item, index) => (
-          <div
-            key={index}
-            className="group flex items-start gap-4 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 transition-all duration-300 hover:border-purple-500/30 hover:bg-zinc-900"
-          >
-            <div className="min-w-0 flex-1">
-              <div className="mb-2 flex items-center gap-2">
-                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-purple-500/10 text-xs font-semibold text-purple-400">
-                  {index + 1}
-                </span>
-
-                <span className="text-xs font-medium uppercase tracking-widest text-zinc-600">
-                  AI Prompt
-                </span>
-              </div>
-
-              <p className="text-sm leading-6 text-zinc-300">
-                {item.prompt}
+              <p className="mt-1 text-sm text-zinc-500">
+                Prompts you have used to generate AI wallpapers
               </p>
             </div>
 
             <button
               type="button"
-              onClick={async () => {
-                await navigator.clipboard.writeText(item.prompt);
-                setCopiedPrompt(index);
-
-                setTimeout(() => {
-                  setCopiedPrompt(null);
-                }, 1500);
-              }}
-              className="shrink-0 cursor-pointer rounded-xl border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs font-medium text-zinc-400 transition-all duration-200 hover:border-cyan-500/40 hover:bg-cyan-500/10 hover:text-cyan-400"
+              onClick={() => setShowPrompts(!showPrompts)}
+              className="cursor-pointer rounded-xl bg-purple-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-500"
             >
-              {copiedPrompt === index ? "Copied" : "Copy"}
+              {showPrompts ? "Hide Prompts" : "View Prompts"}
             </button>
           </div>
-        ))
-      )}
-    </div>
-  )}
-</section>
+
+          {showPrompts && (
+            <div className="mt-6 space-y-3">
+              {prompts.length === 0 ? (
+                <div className="rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/30 p-6 text-center">
+                  <p className="text-sm text-zinc-500">
+                    You haven't generated any AI wallpapers yet.
+                  </p>
+                </div>
+              ) : (
+                prompts.map((item, index) => (
+                  <div
+                    key={index}
+                    className="group flex items-start gap-4 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 transition-all duration-300 hover:border-purple-500/30 hover:bg-zinc-900"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-2 flex items-center gap-2">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-purple-500/10 text-xs font-semibold text-purple-400">
+                          {index + 1}
+                        </span>
+
+                        <span className="text-xs font-medium uppercase tracking-widest text-zinc-600">
+                          AI Prompt
+                        </span>
+                      </div>
+
+                      <p className="text-sm leading-6 text-zinc-300">
+                        {item.prompt}
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await navigator.clipboard.writeText(item.prompt);
+                        setCopiedPrompt(index);
+
+                        setTimeout(() => {
+                          setCopiedPrompt(null);
+                        }, 1500);
+                      }}
+                      className="shrink-0 cursor-pointer rounded-xl border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs font-medium text-zinc-400 transition-all duration-200 hover:border-cyan-500/40 hover:bg-cyan-500/10 hover:text-cyan-400"
+                    >
+                      {copiedPrompt === index ? "Copied" : "Copy"}
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
+        </section>
 
         <section className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6 md:p-7">
           <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -532,9 +525,68 @@ export default function Profile() {
                     className="h-64 w-full object-cover transition duration-500 group-hover:scale-110"
                   />
 
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDeleteId(photo.id);
+                      setShowDeletePopup(true);
+                    }}
+                    className="absolute right-3 top-3 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-red-500/30 bg-black/70 text-red-400 backdrop-blur-sm transition hover:bg-red-500 hover:text-white"
+                    aria-label="Delete wallpaper"
+                  >
+                    <Trash2 size={17} />
+                  </button>
                 </div>
               ))}
+            </div>
+          )}
+
+          {showDeletePopup && deleteId !== null && (
+            <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/80 px-4">
+              <div className="w-full max-w-md rounded-3xl border border-zinc-800 bg-zinc-950 p-6">
+                <h2 className="text-xl font-semibold text-white">
+                  Are you sure?
+                </h2>
+
+                <p className="mt-2 text-sm text-zinc-500">
+                  Do you want to delete this wallpaper? This action will remove
+                  the wallpaper from community uploads.
+                </p>
+
+                <div className="mt-6 flex gap-3">
+                  <button
+                    type="button"
+                    disabled={deleteLoader}
+                    onClick={() => {
+                      setShowDeletePopup(false);
+                      setDeleteId(null);
+                    }}
+                    className="flex-1 cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm font-semibold text-zinc-300 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={deleteLoader}
+                    onClick={() => {
+                      deleteUserUpload(deleteId);
+                    }}
+                    className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {deleteLoader ? (
+                      <>
+                        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                        Deleting...
+                      </>
+                    ) : (
+                      "Delete"
+                    )}
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </section>
